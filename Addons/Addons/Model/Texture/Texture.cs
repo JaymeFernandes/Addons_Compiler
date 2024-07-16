@@ -10,6 +10,7 @@ using System.Xml.Linq;
 
 namespace Addons.Model.Texture
 {
+
     public class TexturePack
     {
         [JsonProperty("resource_pack_name")]
@@ -21,11 +22,15 @@ namespace Addons.Model.Texture
         [JsonProperty("texture_data")]
         private Dictionary<string, Data> _Data { get; set; } = new Dictionary<string, Data>();
 
+        [JsonIgnore()]
+        public string PathFile { get; set; }
 
-        public TexturePack(string resourceName, TextureType type)
+
+        public TexturePack(string resourceName, TextureType type, string path)
         {
             if (String.IsNullOrEmpty(resourceName)) throw new ArgumentNullException(nameof(resourceName));
 
+            PathFile = path;
             ResourceName = resourceName;
             TextureName = type.GetString();
         }
