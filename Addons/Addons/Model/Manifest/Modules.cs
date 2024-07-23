@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Addons.Model.Manifest.Modules
+namespace Addons.Model.Manifest
 {
     public class AddonModules
     {
         [JsonProperty("description")]
-        public string Description { get; private set; } 
+        public string Description { get; private set; }
 
         [JsonProperty("type")]
         public string Type { get; private set; }

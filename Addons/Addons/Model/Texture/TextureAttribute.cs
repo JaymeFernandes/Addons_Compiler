@@ -4,22 +4,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Addons.Model.Texture
+namespace Addons.Texture
+
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class TextureAttribute : Attribute
     {
-        public string Name { get; private set; }
         public string Path { get; private set; }
         public TextureType Type { get; private set; }
 
-        public string CustomFolder { get; private set; }
-
-        public TextureAttribute(string name, string path, TextureType type, string customFolder = "")
+        public TextureAttribute(string path, TextureType type)
         {
-            Name = name;
             Path = path;
             Type = type;
         }
+    }
+
+    public class Texture
+    {
+        public string Name { get; set; }
+        public string Folder { get; set; } = "";
+
+        public Texture() { }
+
+        public Texture(string name, string folder)
+        {
+            Name = name;
+            Folder = folder;
+        }
+    }
+
+
+    public enum TextureType
+    {
+        Items,
+        Terrain,
+        Entity,
+        Environment,
+        Gui,
+        Misc,
+        Particles
     }
 }

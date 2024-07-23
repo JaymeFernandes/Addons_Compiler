@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Addons.Model.Manifest.Header
+namespace Addons.Model.Manifest
 {
     public class AddonHeader
     {

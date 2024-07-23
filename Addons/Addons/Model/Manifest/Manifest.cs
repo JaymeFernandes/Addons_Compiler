@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Addons.Model.Manifest.Header;
-using Addons.Model.Manifest.Modules;
 using Newtonsoft.Json;
 
 namespace Addons.Model.Manifest

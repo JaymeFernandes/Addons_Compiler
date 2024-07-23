@@ -1,5 +1,6 @@
 ﻿using Addons;
-using Addons.Model.Texture;
+using Addons.View;
+using Addons.Texture;
 using Newtonsoft.Json;
 using System;
 
