@@ -1,50 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Addons.View
 {
     public static partial class Logs
     {
-        static int CursorPosition = -1;
+        private static int _cursorDefaultPosition = -1;
+        private static int _cursorPosition = -1;
+        private static List<string> _logs = new List<string>();
 
-        private static void UpdatePosition()
+        private static void UpdateCursorPosition()
         {
-            CursorPosition = Console.CursorTop;
+            _cursorPosition = Console.CursorTop;
         }
 
-        public static void Title(string title)
+        public static void Loading(string title, string message, Status status, int currentPosition, int totalProcesses)
         {
-            string texto = $"\n[ {title} ]";
+            if (_cursorDefaultPosition == -1) _cursorDefaultPosition = Console.CursorTop;
+            if (currentPosition == 0) currentPosition++;
+            if (status == Status.Complete) _logs.Add(message);
 
+            ResetCursorToDefaultPosition();
+
+            int positionPercentage = (40 * currentPosition) / totalProcesses;
+            int percentage = (positionPercentage * 100) / 40;
+
+            PrintLoadingTitle(title);
+            PrintProgressBar(positionPercentage);
+
+            PrintLogs();
+
+            if (status == Status.Running) Process(message, status);
+
+            if (currentPosition == totalProcesses && status == Status.Complete)
+            {
+                ResetLoading();
+            }
+        }
+
+        private static void ResetCursorToDefaultPosition()
+        {
+            Console.CursorTop = _cursorDefaultPosition;
+            Console.CursorLeft = 0;
+        }
+
+        private static void PrintLoadingTitle(string title)
+        {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine(texto);
+            Console.WriteLine($"[ {title} ]");
             Console.ResetColor();
+        }
+
+        private static void PrintProgressBar(int positionPercentage)
+        {
+            Console.Write("[");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(new string('|', positionPercentage) + new string(' ', 40 - positionPercentage));
+            Console.ResetColor();
+            Console.WriteLine("]");
+        }
+
+        private static void PrintLogs()
+        {
+            foreach (var log in _logs)
+            {
+                Process(log, Status.Complete);
+            }
+        }
+
+        private static void ResetLoading()
+        {
+            _cursorDefaultPosition = -1;
+            Thread.Sleep(1000);
+            Console.Clear();
+            _logs.Clear();
         }
 
         public static void Process(string message, Status status)
         {
-            if (CursorPosition == -1) CursorPosition = Console.CursorTop;
+            if (_cursorPosition == -1) UpdateCursorPosition();
 
-            Console.CursorTop = CursorPosition;
+            Console.CursorTop = _cursorPosition;
             Console.CursorLeft = 0;
 
+            string timestamp = $"[{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}]";
+            string statusMessage = $"{message} - {status.GetString()}";
+            string output = $"{timestamp} {statusMessage}";
+
+            PrintProcessMessage(timestamp, message, status);
+            PrintProcessStatus(status, output.Length);
+
+            if (status == Status.Complete || status == Status.Failed)
+            {
+                ResetProcess();
+            }
+        }
+
+        private static void PrintProcessMessage(string timestamp, string message, Status status)
+        {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write($"[{DateTime.Now.ToString()}]");
+            Console.Write(timestamp);
             Console.ResetColor();
             Console.Write($" {message} - ");
+        }
 
+        private static void PrintProcessStatus(Status status, int outputLength)
+        {
             switch (status)
             {
-                case Status.running:
+                case Status.Running:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
-                case Status.complete:
+                case Status.Complete:
                     Console.ForegroundColor = ConsoleColor.Green;
                     break;
-                case Status.failed:
+                case Status.Failed:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 default:
@@ -52,37 +123,33 @@ namespace Addons.View
                     break;
             }
 
-            Console.Write($"{status.GetString()}".PadRight(50, ' '));
-
+            Console.Write(status.GetString().PadRight(100 - outputLength));
+            if (status == Status.Complete || status == Status.Failed) Console.WriteLine();
             Console.ResetColor();
+        }
 
-            if (status == Status.complete || status == Status.failed)
-            {
-                Console.CursorLeft = 0;
-                CursorPosition = -1;
-            }
+        private static void ResetProcess()
+        {
+            Console.CursorLeft = 0;
+            _cursorPosition = -1;
         }
 
         public enum Status
         {
-            running,
-            complete,
-            failed
+            Running,
+            Complete,
+            Failed
         }
 
         public static string GetString(this Status status)
         {
-            switch (status)
+            return status switch
             {
-                case Status.running:
-                    return "[ Running ]";
-                case Status.complete:
-                    return "[ Complete ]\n";
-                case Status.failed:
-                    return "[ Failed ]\n";
-                default:
-                    return "";
-            }
+                Status.Running => "[ Running ]",
+                Status.Complete => "[ Complete ]",
+                Status.Failed => "[ Failed ]",
+                _ => string.Empty
+            };
         }
     }
 }

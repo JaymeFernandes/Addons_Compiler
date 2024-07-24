@@ -2,6 +2,7 @@
 using Addons.Services.FileManager;
 using Addons.Texture;
 using Addons.View;
+using System.IO;
 using System.Reflection;
 
 namespace Addons
@@ -25,8 +26,6 @@ namespace Addons
             /// <exception cref="ArgumentException">Thrown when Behavior or Resource is null.</exception>
             public Addon Build()
             {
-                
-
                 if (addon.Behavior?.Manifest != null && addon.Resource?.Manifest != null)
                 {
                     BehaviorPackManager.SerName(addon.Name);
@@ -104,49 +103,67 @@ namespace Addons
 
                 public void CreateFiles()
                 {
-                    Logs.Title("Create Jsons Textures");
-
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./item_texture.json\" )", Logs.Status.Running, 1, 1);
                     ResourcePackManager.CreateJson(Item);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./item_texture.json\" )", Logs.Status.Complete, 1, 7);
+
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./terrain_textures.json\" )", Logs.Status.Running, 2, 7);
                     ResourcePackManager.CreateJson(Terrain);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./terrain_textures.json\" )", Logs.Status.Complete, 2, 7);
+
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./entity_textures.json\" )", Logs.Status.Running, 3, 7);
                     ResourcePackManager.CreateJson(Entity);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./entity_textures.json\" )", Logs.Status.Complete, 3, 7);
+
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./environment_config.json\" )", Logs.Status.Running, 4, 7);
                     ResourcePackManager.CreateJson(Environment);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./environment_config.json\" )", Logs.Status.Complete, 4, 7);
+
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./gui_config.json\" )", Logs.Status.Running, 5, 7);
                     ResourcePackManager.CreateJson(Gui);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./gui_config.json\" )", Logs.Status.Complete, 5, 7);
+
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./misc_config.json\" )", Logs.Status.Running, 6, 7);
                     ResourcePackManager.CreateJson(Misc);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./misc_config.json\" )", Logs.Status.Complete, 6, 7);
+
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./misc_config.json\" )", Logs.Status.Running, 7, 7);
                     ResourcePackManager.CreateJson(Particles);
+                    Logs.Loading("Create Jsons Textures", $"Create Manifest: ( \"./particle_effects.json\" )", Logs.Status.Complete, 7, 7);
                 }
 
                 internal void AddTexture(string name, string path, TextureType type, string folder = "")
                 {
-                    Logs.Process($"Add Texture: {name}", Logs.Status.running);
+                    Logs.Process($"Add Texture: {name}", Logs.Status.Running);
                     switch (type)
                     {
                         case TextureType.Items:
                             Item.AddTexture(name, path, $"/items/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                         case TextureType.Terrain:
                             Terrain.AddTexture(name, path, $"/terrain/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                         case TextureType.Entity:
                             Entity.AddTexture(name, path, $"/entity/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                         case TextureType.Environment:
                             Environment.AddTexture(name, path, $"/environment/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                         case TextureType.Gui:
                             Gui.AddTexture(name, path, $"/gui/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                         case TextureType.Misc:
                             Misc.AddTexture(name, path, $"/misc/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                         case TextureType.Particles:
                             Particles.AddTexture(name, path, $"/particles/{folder}");
-                            Logs.Process($"Add Texture: {name}", Logs.Status.complete);
+                            Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
                             break;
                     }
                 }
@@ -155,7 +172,6 @@ namespace Addons
                 {
                     public static Textures Load(Textures texture)
                     {
-                        Logs.Title("Loading Textures...");
 
                         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                             .Where(a => !a.IsDynamic && a.GetName().Name != "Addons") // Filtra o assembly específico
@@ -172,30 +188,35 @@ namespace Addons
                                 .Where(prop => Attribute.IsDefined(prop, typeof(TextureAttribute)))
                                 .ToArray();
 
+                            int postition = 0;
+
                             foreach (var property in properties)
                             {
+                                postition++;
                                 if (property.PropertyType == typeof(Texture.Texture))
                                 {
                                     var attribute = property.GetCustomAttribute<TextureAttribute>();
 
-                                    Logs.Process($"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.running);
+                                    
+
+                                    Logs.Loading("Loading Textures...", $"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.Running, postition, properties.Length + 1);
 
                                     var instance = Activator.CreateInstance(type);
                                     var value = property.GetValue(instance) as Texture.Texture;
 
                                     if (attribute is null)
                                     {
-                                        Logs.Process($"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.failed);
+                                        Logs.Loading("Loading Textures...", $"Processing property '{property.Name}' in '{type.Name}'.",             Logs.Status.Failed, postition, properties.Length + 1);
                                         throw new ArgumentNullException(nameof(attribute));
                                     }
                                     if (value is null)
                                     {
-                                        Logs.Process($"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.failed);
+                                        Logs.Loading("Loading Textures...", $"Processing property '{property.Name}' in '{type.Name}'.",             Logs.Status.Failed, postition, properties.Length + 1);
                                         throw new ArgumentNullException(nameof(value));
                                     }
 
+                                    Logs.Loading("Loading Textures...", $"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.Complete, postition, properties.Length + 1);
 
-                                    Logs.Process($"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.complete);
                                     texture.AddTexture(value.Name, attribute.Path, attribute.Type, value.Folder ?? "");
                                 }
                             }

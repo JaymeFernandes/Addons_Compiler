@@ -3,6 +3,7 @@ using Addons.View;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,20 +32,19 @@ namespace Addons.Services.FileManager
 
         public static void Create(string name, AddonManifest manifest)
         {
-            Logs.Title("Generating BehaviorPack");
+            
 
             foreach (var path in Base)
             {
-                Logs.Process($"Create Folder ( \"{path}\" )", Logs.Status.running);
+                Logs.Loading("Generating BehaviorPack", $"Create Folder ( \"{path}\" )", Logs.Status.Running, Base.IndexOf(path), Base.Count + 1);
                 Directory.CreateDirectory($"{_Folder}{path}");
-                Logs.Process($"Create Folder ( \"{path}\" )", Logs.Status.complete);
+                Logs.Loading("Generating BehaviorPack", $"Create Folder ( \"{path}\" )", Logs.Status.Complete, Base.IndexOf(path), Base.Count + 1);
             }
 
-            Logs.Process($"Create File ( \"{_Folder}/manifest.json\" )", Logs.Status.running);
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);
 
             File.WriteAllText($"{_Folder}manifest.json", json);
-            Logs.Process($"Create File ( \"{_Folder}/manifest.json\" )", Logs.Status.complete);
+            Logs.Loading("Generating ResourcePack", $"Create File ( \"./manifest.json\" )", Logs.Status.Complete, Base.Count + 1, Base.Count + 1);
         }
     }
 }

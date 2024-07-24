@@ -1,9 +1,4 @@
 ﻿using Addons.Texture;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AddonTest
 {
@@ -11,9 +6,24 @@ namespace AddonTest
     {
         
         [Texture("D:/temp/luk_inicial.png", TextureType.Items)]
-        public Texture Sword_Iron { get; set; } = new Texture("Sword-iron", "/swords");
+        public Texture Texture1 { get; set; } = new Texture("Sword-iron", "/swords");
 
-        [Texture("D:/temp/luk_inicial.png", TextureType.Items)]
-        public Texture Sword_Iron2 { get; set; } = new Texture("Sword-iron2", "/swords");
+        [Texture("D:/temp/luk_inicial.png", TextureType.Entity)]
+        public Texture Texture2 { get; set; } = new Texture("Sword-iron", "/swords");
+
+        [Texture("D:/temp/luk_inicial.png", TextureType.Environment)]
+        public Texture Texture3 { get; set; } = new Texture("Sword-iron", "/swords");
+
+        [Texture("D:/temp/luk_inicial.png", TextureType.Terrain)]
+        public Texture Texture4 { get; set; } = new Texture("Sword-iron", "/swords");
+
+        [Texture("D:/temp/luk_inicial.png", TextureType.Gui)]
+        public Texture Texture5 { get; set; } = new Texture("Sword-iron", "/swords");
+
+        [Texture("D:/temp/luk_inicial.png", TextureType.Misc)]
+        public Texture Texture6 { get; set; } = new Texture("Sword-iron", "/swords");
+
+        [Texture("D:/temp/luk_inicial.png", TextureType.Particles)]
+        public Texture Texture7 { get; set; } = new Texture("Sword-iron", "/swords");
     }
 }

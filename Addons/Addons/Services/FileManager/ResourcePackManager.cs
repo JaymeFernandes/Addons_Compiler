@@ -2,6 +2,7 @@
 using Addons.Texture;
 using Addons.View;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace Addons.Services.FileManager
 {
@@ -37,27 +38,21 @@ namespace Addons.Services.FileManager
 
         public static void Create(string name, AddonManifest manifest)
         {
-            Logs.Title("Generating ResourcePack");
-
             foreach (var path in Base)
             {
-                Logs.Process($"Create Folder ( \"{path}\" )", Logs.Status.running);
+                Logs.Loading("Generating ResourcePack", $"Create Folder ( \"{path}\" )", Logs.Status.Running, Base.IndexOf(path), Base.Count + 1);
                 Directory.CreateDirectory($"./bin/{name}_Resource/{path}");
-                Logs.Process($"Create Folder ( \"{path}\" )", Logs.Status.complete);
+                Logs.Loading("Generating ResourcePack", $"Create Folder ( \"{path}\" )", Logs.Status.Complete, Base.IndexOf(path), Base.Count + 1);
             }
 
-
-            Logs.Process($"Create File ( \"{_Folder}/manifest.json\" )", Logs.Status.running);
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);
 
             File.WriteAllText($"{_Folder}/manifest.json", json);
-            Logs.Process($"Create File ( \"{_Folder}/manifest.json\" )", Logs.Status.complete);
+            Logs.Loading("Generating ResourcePack", $"Create manifest ( \"./manifest.json\" )", Logs.Status.Complete, Base.Count + 1, Base.Count + 1);
         }
 
         public static void CreateJson(TexturePack texturePack)
         {
-            Logs.Process($"Create {_Folder}{texturePack.PathFile}".Replace("//", "/"), Logs.Status.running);
-
             foreach(var path in texturePack.TextureData)
             {
                 string folder = $"{_Folder}";
@@ -81,16 +76,12 @@ namespace Addons.Services.FileManager
                 if (!File.Exists($"{folder}/{path.Key}.png"))
                 {
                     File.Copy(path.Value.PathTexture, $"{folder}/{path.Key}.png".Replace("//", "/"));
-                    Console.WriteLine("Foi Criado a textura");
-                    Console.ReadLine();
                 }
             }
 
             string json = JsonConvert.SerializeObject(texturePack, Formatting.Indented);
 
             File.WriteAllText($"{_Folder}{texturePack.PathFile}", json);
-
-            Logs.Process($"Create {_Folder}{texturePack.PathFile}", Logs.Status.complete);
         }
     }
 }
