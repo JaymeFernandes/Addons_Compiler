@@ -1,8 +1,7 @@
 ﻿using Addons;
+using Addons.Controller.Items;
+using Addons.Interfaces.Items;
 using Addons.View;
-using Addons.Texture;
-using Newtonsoft.Json;
-using System;
 
 namespace AddonTest
 {
@@ -10,15 +9,26 @@ namespace AddonTest
     {
         static void Main(string[] args)
         {
-
-            var builder = new Addon.Builder()
+            var builder = new Addon.CreateBuilder()
+                .BuildLogs(true)
                 .SetName("Temp")
                 .SetDescription("temp")
                 .AddBehavior()
                 .AddResource();
-                
 
-            var app = builder.Build();
+            var app = builder.BuildBase();
+
+            IMinecraftItem item = new Item();
+
+            item.Property(x =>
+            {
+                x.Identifier = "my_custom_item:item";
+                x.Category = ItemCategory.Misc;
+                x.Name = "apple";
+                x.SetTexture("my_custom_item");
+            });
+
+            Console.WriteLine(item.ToString());
         }
     }
 }

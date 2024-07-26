@@ -18,7 +18,6 @@ namespace Addons.Model.Manifest
         [JsonProperty("modules")]
         public List<AddonModules> Modules { get; private set; } = new List<AddonModules>();
 
-
         public AddonManifest(string name, string description)
         {
             Header = new AddonHeader()
@@ -43,5 +42,14 @@ namespace Addons.Model.Manifest
         {
             Modules.Add(modules);
         }
+    }
+
+    public class Dependencies
+    {
+        [JsonProperty("uuid")]
+        public string Uuid { get; set; } = "";
+
+        [JsonProperty("version")]
+        public List<int>? Versions { get; set; }
     }
 }

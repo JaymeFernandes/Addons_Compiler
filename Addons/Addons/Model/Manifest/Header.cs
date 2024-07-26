@@ -18,7 +18,7 @@ namespace Addons.Model.Manifest
         public string Name { get; set; } = "Undefined";
 
         [JsonProperty("uuid")]
-        public string _UUID { get; private set; } = UUID.Generate();
+        public string _UUID { get; set; } = UUID.Generate();
 
         [JsonProperty("version")]
         public List<int> Versions { get; set; } = new List<int>() { 3, 0, 0 };

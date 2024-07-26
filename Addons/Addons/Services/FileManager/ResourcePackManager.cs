@@ -12,7 +12,7 @@ namespace Addons.Services.FileManager
 
         public static void SerName(string name)
         {
-            _Folder = $"./bin/{name}_Resource/";
+            _Folder = $"./com.mojang/development_resource_packs/{name}_Resource/";
         }
 
 
@@ -41,7 +41,7 @@ namespace Addons.Services.FileManager
             foreach (var path in Base)
             {
                 Logs.Loading("Generating ResourcePack", $"Create Folder ( \"{path}\" )", Logs.Status.Running, Base.IndexOf(path), Base.Count + 1);
-                Directory.CreateDirectory($"./bin/{name}_Resource/{path}");
+                Directory.CreateDirectory($"{_Folder}/{path}");
                 Logs.Loading("Generating ResourcePack", $"Create Folder ( \"{path}\" )", Logs.Status.Complete, Base.IndexOf(path), Base.Count + 1);
             }
 

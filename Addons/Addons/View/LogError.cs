@@ -8,7 +8,9 @@ namespace Addons.View
     {
         private static int _cursorDefaultPosition = -1;
         private static int _cursorPosition = -1;
+        private static int num = 10;
         private static List<string> _logs = new List<string>();
+        public static bool ViewLogs = true;
 
         private static void UpdateCursorPosition()
         {
@@ -29,9 +31,12 @@ namespace Addons.View
             PrintLoadingTitle(title);
             PrintProgressBar(positionPercentage);
 
-            PrintLogs();
+            if (ViewLogs)
+            {
+                PrintLogs();
 
-            if (status == Status.Running) Process(message, status);
+                if (status == Status.Running) Process(message, status);
+            }
 
             if (currentPosition == totalProcesses && status == Status.Complete)
             {
@@ -71,10 +76,17 @@ namespace Addons.View
 
         private static void ResetLoading()
         {
+            Console.CursorTop = _logs.Count + num;
+
+            num =+ _logs.Count;
+
             _cursorDefaultPosition = -1;
-            Thread.Sleep(1000);
+            _cursorPosition = -1;
+
+            if(ViewLogs) Thread.Sleep(1000);
             Console.Clear();
             _logs.Clear();
+            
         }
 
         public static void Process(string message, Status status)
@@ -88,8 +100,11 @@ namespace Addons.View
             string statusMessage = $"{message} - {status.GetString()}";
             string output = $"{timestamp} {statusMessage}";
 
-            PrintProcessMessage(timestamp, message, status);
-            PrintProcessStatus(status, output.Length);
+            if (ViewLogs)
+            {
+                PrintProcessMessage(timestamp, message, status);
+                PrintProcessStatus(status, output.Length);
+            }
 
             if (status == Status.Complete || status == Status.Failed)
             {

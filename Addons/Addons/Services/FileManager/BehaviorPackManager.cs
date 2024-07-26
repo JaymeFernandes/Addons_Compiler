@@ -16,7 +16,7 @@ namespace Addons.Services.FileManager
 
         public static void SerName(string name)
         {
-            _Folder = $"./bin/{name}_Behavior/";
+            _Folder = $"./com.mojang/development_behavior_packs/{name}_Behavior/";
         }
 
         public static List<string> Base = new List<string>()
