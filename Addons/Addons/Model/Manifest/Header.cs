@@ -1,13 +1,7 @@
 ﻿using Addons.Services;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Addons.Model.Manifest
+namespace Addons.Model
 {
     public class AddonHeader
     {

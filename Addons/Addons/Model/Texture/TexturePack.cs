@@ -40,7 +40,7 @@ namespace Addons.Texture
 
             var textureKey = name.Replace(' ', '_');
 
-            var finalFolder = $"textures/{folder}/{name}.png".Replace(@"\", "/");
+            var finalFolder = $"textures/{folder}/{name}".Replace(@"\", "/");
 
             while (finalFolder.Contains("//", StringComparison.InvariantCulture))
             {

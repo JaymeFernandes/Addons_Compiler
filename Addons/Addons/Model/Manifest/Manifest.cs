@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Addons.Model.Manifest
+namespace Addons.Model
 {
     public class AddonManifest
     {
-        [JsonProperty("format_version")]
-        private int Formet_Version = 1;
+        BaseJson _json = new BaseJson();
 
-        [JsonProperty("header")]
+        private const int Formet_Version = 1;
+
         public AddonHeader Header { get; set; }
 
-        [JsonProperty("modules")]
         public List<AddonModules> Modules { get; private set; } = new List<AddonModules>();
+
+        public List<AddonDependencies> Dependencies { get; private set; } = new List<AddonDependencies>();
 
         public AddonManifest(string name, string description)
         {
@@ -42,9 +38,24 @@ namespace Addons.Model.Manifest
         {
             Modules.Add(modules);
         }
+
+        public override string ToString()
+        {
+            if (this.Header == null) throw new ArgumentNullException("header is null");
+            if (this.Modules == null) throw new ArgumentNullException("modeles is null");
+
+            _json.Propety(x =>
+            {
+                x.data.Add("format_version", Formet_Version);
+                x.data.Add("header", Header);
+                x.data.Add("modules", Modules);
+                if (Dependencies.Count != 0) x.data.Add("dependencies", Dependencies);
+            });
+            return _json.ToString();
+        }
     }
 
-    public class Dependencies
+    public class AddonDependencies
     {
         [JsonProperty("uuid")]
         public string Uuid { get; set; } = "";

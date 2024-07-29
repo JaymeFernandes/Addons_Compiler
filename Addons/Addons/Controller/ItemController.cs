@@ -1,8 +1,6 @@
-﻿using Addons.Interfaces.Items;
-using Addons.Model.Items;
-using System.Xml.Linq;
+﻿using Addons.Model;
 
-namespace Addons.Controller.Items
+namespace Addons
 {
     public class Item : IMinecraftItem
     {
@@ -11,6 +9,15 @@ namespace Addons.Controller.Items
         public string? Identifier { get; set; }
 
         public ItemCategory? Category { get; set; }
+
+        public bool? StackedByData { get; set; }
+
+        public int? Max { get; set; }
+
+        public bool? Foil { get; set; }
+
+        public bool? HandEquipped { get; set; }
+
 
         private IMinecraftItemJson json { get; set; } = new ModelItemJson();
 
@@ -21,35 +28,35 @@ namespace Addons.Controller.Items
 
         public override string ToString()
         {
-            if(!string.IsNullOrEmpty(Name)) json.SetProperty("minecraft:render_offsets", Name);
+            if (!string.IsNullOrEmpty(Name)) json.SetDisplayName(Name);
             else throw new ArgumentNullException(nameof(Name));
 
             if (!string.IsNullOrEmpty(Identifier)) json.SetIdentifier(Identifier);
             else throw new ArgumentNullException(nameof(Identifier));
 
-            if(Category != null)
+            if (Category != null)
             {
                 string categoryString = "";
 
                 switch (Category)
                 {
                     case ItemCategory.Misc:
-                        categoryString = "Misc";
+                        categoryString = "misc";
                         break;
                     case ItemCategory.Construction:
-                        categoryString = "Construction";
+                        categoryString = "construction";
                         break;
                     case ItemCategory.Items:
-                        categoryString = "Items";
+                        categoryString = "items";
                         break;
                     case ItemCategory.Nature:
-                        categoryString = "Nature";
+                        categoryString = "nature";
                         break;
                     case ItemCategory.Equipment:
-                        categoryString = "Equipment";
+                        categoryString = "equipment";
                         break;
                     default:
-                        throw new NotImplementedException(); 
+                        throw new NotImplementedException();
                 }
                 json.SetCategory(categoryString);
             }
@@ -57,6 +64,11 @@ namespace Addons.Controller.Items
             {
                 throw new ArgumentNullException(nameof(Category));
             }
+
+            if (StackedByData != null) json.StackedByData = (bool)StackedByData;
+            if (Max != null) json.Max = (int)Max;
+            if (Foil != null) json.Foil = (bool)Foil;
+            if (HandEquipped != null) json.HandEquipped = (bool)HandEquipped;
 
             return json.BuildJson();
         }

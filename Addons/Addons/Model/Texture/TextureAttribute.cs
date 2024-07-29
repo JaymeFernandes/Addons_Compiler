@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Addons.Texture
-
+﻿namespace Addons.Texture
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class TextureAttribute : Attribute
@@ -25,7 +18,10 @@ namespace Addons.Texture
         public string Name { get; set; }
         public string Folder { get; set; } = "";
 
-        public Texture() { }
+        public Texture(string name)
+        {
+            Name = name;
+        }
 
         public Texture(string name, string folder)
         {

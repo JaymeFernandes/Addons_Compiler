@@ -1,10 +1,7 @@
-﻿using Addons.Controller.Items;
-using Addons.Interfaces.Bulder;
-using Addons.Model.Manifest;
+﻿using Addons.Model;
 using Addons.Services.FileManager;
 using Addons.Texture;
 using Addons.View;
-using System.IO;
 using System.Reflection;
 
 namespace Addons
@@ -191,7 +188,7 @@ namespace Addons
                 var manifesB = new AddonManifest(addon.Name, addon.Description);
                 manifesB.AddModules(new AddonModules(AddonType.Data, addon.Description));
 
-                addon.Behavior = new BehaviorPack(manifesB);
+                addon.Behavior = new BehaviorPackController(manifesB);
                 return this;
             }
 
@@ -218,18 +215,7 @@ namespace Addons
             
         }
 
-        public class BehaviorPack
-        {
-            public AddonManifest Manifest { get; set; }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="BehaviorPack"/> class.
-            /// </summary>
-            public BehaviorPack(AddonManifest manifest)
-            {
-                Manifest = manifest;
-            }
-        }
+        
 
         public class ResourcePack
         {

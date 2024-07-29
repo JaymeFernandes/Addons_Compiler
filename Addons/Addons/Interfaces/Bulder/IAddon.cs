@@ -1,14 +1,9 @@
-﻿using Addons.Interfaces.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Addons;
 
-namespace Addons.Interfaces.Bulder
+namespace Addons
 {
     public interface IAddon
     {
-        public void RegisterItem(IMinecraftItem item);
+
     }
 }

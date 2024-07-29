@@ -1,7 +1,5 @@
 ﻿using Addons;
-using Addons.Controller.Items;
-using Addons.Interfaces.Items;
-using Addons.View;
+using Newtonsoft.Json;
 
 namespace AddonTest
 {
@@ -11,8 +9,8 @@ namespace AddonTest
         {
             var builder = new Addon.CreateBuilder()
                 .BuildLogs(true)
-                .SetName("Temp")
-                .SetDescription("temp")
+                .SetName("temp")
+                .SetDescription("Textura atualizada")
                 .AddBehavior()
                 .AddResource();
 
@@ -22,13 +20,13 @@ namespace AddonTest
 
             item.Property(x =>
             {
-                x.Identifier = "my_custom_item:item";
+                x.Identifier = "mink:item";
                 x.Category = ItemCategory.Misc;
-                x.Name = "apple";
-                x.SetTexture("my_custom_item");
+                x.Name = "item novo minecraft";
+                x.SetTexture("chakra");
             });
 
-            Console.WriteLine(item.ToString());
+            app.Behavior.RegisterItem(item);
         }
     }
 }
