@@ -1,109 +1,222 @@
-﻿using Newtonsoft.Json;
+﻿using Addons.Model;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
-namespace Addons.Model
+namespace Addons
 {
-    public sealed class ModelItemJson : IMinecraftItemJson
+    /// <summary>
+    /// Represents a Minecraft item with various properties and methods for manipulation.
+    /// </summary>
+    public partial class Item
     {
-        BaseJson _Json { get; set; } = new BaseJson();
+        private readonly BaseJson _json = new BaseJson();
 
-        #region Base
+        #region Base Properties
 
-        private string Format { get; set; } = "1.10";
-        private Description MinecraftDescription { get; set; } = new Description();
+        private const string FormatVersion = "1.16.100";
+        private readonly Description _minecraftDescription = new Description();
+        public string? Name { get; set; }
+        public string? Identifier { get; set; }
+        public ItemCategory? Category { get; set; }
 
         #endregion
 
-        #region // Info minecraft:item
+        #region Minecraft Item Properties
 
-        private Dictionary<string, object> Minecraft_Item = new Dictionary<string, object>();
-        public Dictionary<string, object> Components { get; set; } = new Dictionary<string, object>();
-        public Dictionary<string, object> Render { get; private set; } = new Dictionary<string, object>();
-        private object? DisplayName { get; set; } // name item
-        public bool StackedByData { get; set; } = true; // can hold several in your hand
-        public int Max { get; set; } = 64; // max size inventory
-        public bool Foil { get; set; } = false; // if it has a glow of enchantment
+        private readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
+        public Dictionary<string, object> Components { get; private set; } = new Dictionary<string, object>();
+        public RenderItem Render { get; set; } = new RenderItem();
+        private object? _displayName; // Display name of the item
+        public bool StackedByData { get; set; } = true;  
+        public int MaxStackSize { get; set; } = 64;
+        public bool Foil { get; set; } = false;
         public bool HandEquipped { get; set; } = true;
+        public int Damage { get; set; } = 0;
 
         #endregion
 
+        /// <summary>
+        /// Builds the JSON representation of the item.
+        /// </summary>
+        /// <returns>The JSON string representing the item.</returns>
         public string BuildJson()
         {
-            Minecraft_Item.Add("description", MinecraftDescription);
+            _minecraftItem["description"] = _minecraftDescription;
 
-            if (Render.Count > 0) Components.Add("minecraft:render_offsets", Render);
-            if (DisplayName != null) Components.Add("minecraft:display_name", DisplayName);
+            Components["minecraft:render_offsets"] = Render.Renders;
 
-            Components.Add("minecraft:stacked_by_data", StackedByData);
-            Components.Add("minecraft:max_stack_size", Max);
-            Components.Add("minecraft:foil", Foil);
-            Components.Add("minecraft:hand_equipped", HandEquipped);
-
-            Minecraft_Item.Add("components", Components);
-
-            _Json.Propety(x =>
+            if (_displayName != null)
             {
-                x.data.Add("format_version", Format);
-                x.data.Add("minecraft:item", Minecraft_Item);
+                Components["minecraft:display_name"] = _displayName;
+            }
+
+            Components["minecraft:stacked_by_data"] = StackedByData;
+            Components["minecraft:max_stack_size"] = MaxStackSize;
+            Components["minecraft:foil"] = Foil;
+            Components["minecraft:hand_equipped"] = HandEquipped;
+
+            if (Damage > 0) Components["minecraft:damage"] = Damage;
+
+            _minecraftItem["components"] = Components;
+
+            _json.Propety(x =>
+            {
+                x.data["format_version"] = FormatVersion;
+                x.data["minecraft:item"] = _minecraftItem;
             });
 
-            return _Json.ToString();
+            return _json.ToString();
         }
 
+        /// <summary>
+        /// Sets the display name of the item.
+        /// </summary>
+        /// <param name="name">The display name.</param>
         public void SetDisplayName(string name)
         {
-            DisplayName = new { value = name };
+            _displayName = new { value = name };
         }
 
+        /// <summary>
+        /// Sets the texture of the item.
+        /// </summary>
+        /// <param name="name">The texture name.</param>
         public void SetTexture(string name)
         {
-            Components["minecraft:icon"] = new
-            {
-                texture = name
-            };
+            Components["minecraft:icon"] = new { texture = name };
         }
 
+        /// <summary>
+        /// Sets the category of the item.
+        /// </summary>
+        /// <param name="category">The category name.</param>
         public void SetCategory(string category)
         {
-            MinecraftDescription.category = category;
+            _minecraftDescription.Category = category;
         }
 
+        /// <summary>
+        /// Sets the identifier of the item.
+        /// </summary>
+        /// <param name="identifier">The identifier.</param>
         public void SetIdentifier(string identifier)
         {
-            MinecraftDescription.identifier = identifier;
+            _minecraftDescription.Identifier = identifier;
         }
 
+        /// <summary>
+        /// Sets a property of the item.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <param name="value">The property value.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the key is null or empty.</exception>
         public void SetProperty(string key, object value)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 
             Components[key] = value;
         }
-    }
 
-    public sealed class Description
-    {
-        [JsonProperty("identifier")]
-        public string? identifier { get; set; }
-
-        [JsonProperty("category")]
-        public string? category { get; set; }
-    }
-
-    public class RenderItem
-    {
-
-
-        public RenderItem SetPosition(RenderTypes type, int  x, int y, int z)
+        /// <summary>
+        /// Adds a render offset to the item.
+        /// </summary>
+        /// <param name="hand">The hand type.</param>
+        /// <param name="view">The view type.</param>
+        /// <param name="scale">The scale values.</param>
+        /// <param name="rotation">The rotation values.</param>
+        /// <param name="translation">The translation values.</param>
+        public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
-            return this;
+            Render.AddRenderOffset(hand, view, scale, rotation, translation);
         }
     }
 
-    public enum RenderTypes
+    /// <summary>
+    /// Represents the description of a Minecraft item.
+    /// </summary>
+    public sealed class Description
+    {
+        [JsonProperty("identifier")]
+        public string? Identifier { get; set; }
+
+        [JsonProperty("category")]
+        public string? Category { get; set; }
+    }
+
+    /// <summary>
+    /// Represents render properties of a Minecraft item.
+    /// </summary>
+    public class RenderItem
+    {
+        public Dictionary<string, object> Renders { get; set; } = new Dictionary<string, object>();
+
+        public RenderItem()
+        {
+            AddRenderOffset(HandTypes.MainHand, ViewTypes.FirstPerson);
+            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson);
+        }
+
+        public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
+        {
+            if (scale == null) scale = new float[] { 0.008f, 0.008f, 0.008f };
+
+            if (!Renders.ContainsKey(hand.GetString()))
+            {
+                Renders[hand.GetString()] = new Dictionary<string, object>();
+            }
+
+            var handDict = (Dictionary<string, object>)Renders[hand.GetString()];
+
+            var viewDict = new Dictionary<string, object>
+            {
+                ["scale"] = scale
+            };
+            if (rotation != null) viewDict["rotation"] = rotation;
+            if (translation != null) viewDict["translation"] = translation;
+
+            handDict[view.GetString()] = viewDict;
+        }
+    }
+
+    /// <summary>
+    /// Represents the hand types for rendering.
+    /// </summary>
+    public enum HandTypes
+    {
+        MainHand,
+        OffHand
+    }
+
+    /// <summary>
+    /// Represents the view types for rendering.
+    /// </summary>
+    public enum ViewTypes
     {
         FirstPerson,
-        ManHand,
         ThirdPerson
     }
 
+    internal static class RenderExtension
+    {
+        internal static string GetString(this ViewTypes type)
+        {
+            return type switch
+            {
+                ViewTypes.FirstPerson => "first_person",
+                ViewTypes.ThirdPerson => "third_person",
+                _ => string.Empty,
+            };
+        }
+
+        internal static string GetString(this HandTypes type)
+        {
+            return type switch
+            {
+                HandTypes.MainHand => "main_hand",
+                HandTypes.OffHand => "off_hand",
+                _ => string.Empty,
+            };
+        }
+    }
 }

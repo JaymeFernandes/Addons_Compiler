@@ -1,5 +1,5 @@
 ﻿using Addons;
-using Newtonsoft.Json;
+using Addons.Model;
 
 namespace AddonTest
 {
@@ -8,7 +8,7 @@ namespace AddonTest
         static void Main(string[] args)
         {
             var builder = new Addon.CreateBuilder()
-                .BuildLogs(true)
+                .BuildLogs(false)
                 .SetName("temp")
                 .SetDescription("Textura atualizada")
                 .AddBehavior()
@@ -20,10 +20,12 @@ namespace AddonTest
 
             item.Property(x =>
             {
-                x.Identifier = "mink:item";
-                x.Category = ItemCategory.Misc;
-                x.Name = "item novo minecraft";
-                x.SetTexture("chakra");
+                x.Identifier = "sword:dragon";
+                x.Category = ItemCategory.Items;
+                x.Name = "text1";
+                x.SetTexture("sword_dragon");
+                x.SetDisplayName($"[  {MinecraftTextColor.Red}Matadora de Dragões{MinecraftTextFormatting.reset} ]");
+                x.Damage = 1000;
             });
 
             app.Behavior.RegisterItem(item);

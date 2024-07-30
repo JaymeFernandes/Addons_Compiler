@@ -2,25 +2,8 @@
 
 namespace Addons
 {
-    public class Item : IMinecraftItem
+    public partial class Item : IMinecraftItem
     {
-        public string? Name { get; set; }
-
-        public string? Identifier { get; set; }
-
-        public ItemCategory? Category { get; set; }
-
-        public bool? StackedByData { get; set; }
-
-        public int? Max { get; set; }
-
-        public bool? Foil { get; set; }
-
-        public bool? HandEquipped { get; set; }
-
-
-        private IMinecraftItemJson json { get; set; } = new ModelItemJson();
-
         public void Property(Action<IMinecraftItem> options)
         {
             options(this);
@@ -28,54 +11,46 @@ namespace Addons
 
         public override string ToString()
         {
-            if (!string.IsNullOrEmpty(Name)) json.SetDisplayName(Name);
-            else throw new ArgumentNullException(nameof(Name));
+            if (_displayName == null)
+            {
+                if(String.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
+                SetDisplayName(Name);
+            }
 
-            if (!string.IsNullOrEmpty(Identifier)) json.SetIdentifier(Identifier);
+            if (!string.IsNullOrEmpty(Identifier)) SetIdentifier(Identifier);
             else throw new ArgumentNullException(nameof(Identifier));
 
             if (Category != null)
             {
-                string categoryString = "";
-
+                
                 switch (Category)
                 {
                     case ItemCategory.Misc:
-                        categoryString = "misc";
+                        _minecraftDescription.Category = "misc";
                         break;
                     case ItemCategory.Construction:
-                        categoryString = "construction";
+                        _minecraftDescription.Category = "construction";
                         break;
                     case ItemCategory.Items:
-                        categoryString = "items";
+                        _minecraftDescription.Category = "items";
                         break;
                     case ItemCategory.Nature:
-                        categoryString = "nature";
+                        _minecraftDescription.Category = "nature";
                         break;
                     case ItemCategory.Equipment:
-                        categoryString = "equipment";
+                        _minecraftDescription.Category = "equipment";
                         break;
                     default:
                         throw new NotImplementedException();
                 }
-                json.SetCategory(categoryString);
             }
             else
             {
                 throw new ArgumentNullException(nameof(Category));
             }
 
-            if (StackedByData != null) json.StackedByData = (bool)StackedByData;
-            if (Max != null) json.Max = (int)Max;
-            if (Foil != null) json.Foil = (bool)Foil;
-            if (HandEquipped != null) json.HandEquipped = (bool)HandEquipped;
-
-            return json.BuildJson();
-        }
-
-        public void SetTexture(string name)
-        {
-            json.SetTexture(name);
+            
+            return BuildJson();
         }
     }
 

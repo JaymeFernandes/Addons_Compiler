@@ -55,9 +55,10 @@ namespace Addons.Services.FileManager
             foreach(var path in texturePack.TextureData)
             {
                 string folder = $"{_Folder}";
+
                 if (!String.IsNullOrEmpty(path.Value.Folder))
                 {
-                    folder = $"{folder}/{path.Value.Folder.Replace($"{path.Key}.png", "")}";
+                    folder = $"{folder}/{path.Value.Folder.Replace($"{path.Key}", "")}";
                 }
                 else
                 {
@@ -71,6 +72,7 @@ namespace Addons.Services.FileManager
                 folder = folder.Replace("//", "/");
 
                 Directory.CreateDirectory(folder);
+                
 
                 if (!File.Exists($"{folder}/{path.Key}.png"))
                 {
