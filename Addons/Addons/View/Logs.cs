@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Addons.View
+namespace Addons
 {
-    public static partial class Logs
+    internal static partial class Logs
     {
         private static int _cursorDefaultPosition = -1;
         private static int _cursorPosition = -1;

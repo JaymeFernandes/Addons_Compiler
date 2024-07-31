@@ -1,11 +1,11 @@
 ﻿using Addons.Model;
 using Addons.Texture;
-using Addons.View;
+using Addons;
 using Newtonsoft.Json;
 
-namespace Addons.Services.FileManager
+namespace Addons
 {
-    public static class ResourcePackManager
+    internal static class ResourcePackManager
     {
         private static string _Folder = "";
 
@@ -46,7 +46,7 @@ namespace Addons.Services.FileManager
 
             string json = manifest.ToString();
 
-            File.WriteAllText($"{_Folder}/manifest.json", json);
+            if (!File.Exists($"{_Folder}manifest.json")) File.WriteAllText($"{_Folder}/manifest.json", json);
             Logs.Loading("Generating ResourcePack", $"Create manifest ( \"./manifest.json\" )", Logs.Status.Complete, Base.Count + 1, Base.Count + 1);
         }
 

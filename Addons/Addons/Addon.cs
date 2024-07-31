@@ -1,6 +1,46 @@
 ﻿namespace Addons
 {
-    public static class MinecraftTextColor
+    /// <summary>
+    /// Represents the hand types for rendering.
+    /// </summary>
+    public enum HandTypes
+    {
+        MainHand,
+        OffHand
+    }
+
+    /// <summary>
+    /// Represents the view types for rendering.
+    /// </summary>
+    public enum ViewTypes
+    {
+        FirstPerson,
+        ThirdPerson
+    }
+
+
+    public enum AddonType
+    {
+        Data,
+        Resources,
+        Scripting,
+        Interface,
+        SkinPack,
+        WorldTemplate
+    }
+
+    public enum TextureType
+    {
+        Items,
+        Terrain,
+        Entity,
+        Environment,
+        Gui,
+        Misc,
+        Particles
+    }
+
+    public static class MinecraftColor
     {
         public const string Black = "§0";
         public const string Dark_blue = "§1";
@@ -31,7 +71,7 @@
         public const string Material_amethyst = "§u";
     }
 
-    public static class MinecraftTextFormatting
+    public static class MinecraftFormatting
     {
         public const string Obfuscated = "§k";
         public const string Bold = "§l";

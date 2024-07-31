@@ -1,9 +1,4 @@
 ﻿using Addons.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Addons
 {
@@ -12,5 +7,7 @@ namespace Addons
         public AddonManifest? Manifest { get; set; }
 
         public void RegisterItem(IMinecraftItem item);
+
+        public void RegisterItem(List<IMinecraftItem> items);
     }
 }

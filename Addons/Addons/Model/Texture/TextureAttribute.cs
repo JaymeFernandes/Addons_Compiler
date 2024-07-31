@@ -31,14 +31,5 @@
     }
 
 
-    public enum TextureType
-    {
-        Items,
-        Terrain,
-        Entity,
-        Environment,
-        Gui,
-        Misc,
-        Particles
-    }
+    
 }

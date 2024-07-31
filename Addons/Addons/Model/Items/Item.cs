@@ -1,7 +1,5 @@
 ﻿using Addons.Model;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace Addons
 {
@@ -12,7 +10,7 @@ namespace Addons
     {
         private readonly BaseJson _json = new BaseJson();
 
-        #region Base Properties
+        #region Base
 
         private const string FormatVersion = "1.16.100";
         private readonly Description _minecraftDescription = new Description();
@@ -22,7 +20,7 @@ namespace Addons
 
         #endregion
 
-        #region Minecraft Item Properties
+        #region Minecraft Item properties
 
         private readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
         public Dictionary<string, object> Components { get; private set; } = new Dictionary<string, object>();
@@ -32,6 +30,7 @@ namespace Addons
         public int MaxStackSize { get; set; } = 64;
         public bool Foil { get; set; } = false;
         public bool HandEquipped { get; set; } = true;
+        public int Duration { get; set; } = 0;
         public int Damage { get; set; } = 0;
 
         #endregion
@@ -45,19 +44,13 @@ namespace Addons
             _minecraftItem["description"] = _minecraftDescription;
 
             Components["minecraft:render_offsets"] = Render.Renders;
-
-            if (_displayName != null)
-            {
-                Components["minecraft:display_name"] = _displayName;
-            }
-
+            if (_displayName != null) Components["minecraft:display_name"] = _displayName;
             Components["minecraft:stacked_by_data"] = StackedByData;
             Components["minecraft:max_stack_size"] = MaxStackSize;
             Components["minecraft:foil"] = Foil;
             Components["minecraft:hand_equipped"] = HandEquipped;
-
+            if (Duration > 0) Components["minecraft:use_duration"] = Duration;
             if (Damage > 0) Components["minecraft:damage"] = Damage;
-
             _minecraftItem["components"] = Components;
 
             _json.Propety(x =>
@@ -68,6 +61,8 @@ namespace Addons
 
             return _json.ToString();
         }
+
+        #region Definition methods
 
         /// <summary>
         /// Sets the display name of the item.
@@ -130,6 +125,8 @@ namespace Addons
         {
             Render.AddRenderOffset(hand, view, scale, rotation, translation);
         }
+
+        #endregion
     }
 
     /// <summary>
@@ -154,12 +151,12 @@ namespace Addons
         public RenderItem()
         {
             AddRenderOffset(HandTypes.MainHand, ViewTypes.FirstPerson);
-            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson);
+            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson, scale:new float[] { 0.002f, 0.002f, 0.002f });
         }
 
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
-            if (scale == null) scale = new float[] { 0.008f, 0.008f, 0.008f };
+            if (scale == null) scale = new float[] { 0.001f, 0.001f, 0.001f };
 
             if (!Renders.ContainsKey(hand.GetString()))
             {
@@ -177,24 +174,6 @@ namespace Addons
 
             handDict[view.GetString()] = viewDict;
         }
-    }
-
-    /// <summary>
-    /// Represents the hand types for rendering.
-    /// </summary>
-    public enum HandTypes
-    {
-        MainHand,
-        OffHand
-    }
-
-    /// <summary>
-    /// Represents the view types for rendering.
-    /// </summary>
-    public enum ViewTypes
-    {
-        FirstPerson,
-        ThirdPerson
     }
 
     internal static class RenderExtension

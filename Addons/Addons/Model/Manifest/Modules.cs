@@ -24,19 +24,9 @@ namespace Addons.Model
         }
     }
 
-    public enum AddonType
+    internal static class AddonTypeExtensions
     {
-        Data,
-        Resources,
-        Scripting,
-        Interface,
-        SkinPack,
-        WorldTemplate
-    }
-
-    public static class AddonTypeExtensions
-    {
-        public static string GetString(this AddonType type)
+        internal static string GetString(this AddonType type)
         {
             switch (type)
             {

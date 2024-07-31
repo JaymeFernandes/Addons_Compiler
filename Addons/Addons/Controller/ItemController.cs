@@ -2,7 +2,7 @@
 
 namespace Addons
 {
-    public partial class Item : IMinecraftItem
+    partial class Item : IMinecraftItem
     {
         public void Property(Action<IMinecraftItem> options)
         {

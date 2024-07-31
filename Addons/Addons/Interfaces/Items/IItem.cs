@@ -39,6 +39,14 @@ namespace Addons
         /// </summary>
         public bool HandEquipped { get; set; }
 
+        /// <summary>
+        /// Gets or sets the durability of an item
+        /// </summary>
+        public int Duration { get; set; }
+
+        /// <summary>
+        /// Gets or sets the damage the item does
+        /// </summary>
         public int Damage { get; set; }
 
         public void SetTexture(string name);

@@ -1,16 +1,8 @@
 ﻿using Addons.Model;
-using Addons.View;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Addons.Services.FileManager
+namespace Addons
 {
-    public static class BehaviorPackManager
+    internal static class BehaviorPackManager
     {
         private static string _Folder = "";
 
@@ -41,7 +33,7 @@ namespace Addons.Services.FileManager
 
             string json = manifest.ToString();
 
-            File.WriteAllText($"{_Folder}manifest.json", json);
+            if(!File.Exists($"{_Folder}manifest.json")) File.WriteAllText($"{_Folder}manifest.json", json);
             Logs.Loading("Generating ResourcePack", $"Create File ( \"./manifest.json\" )", Logs.Status.Complete, Base.Count + 1, Base.Count + 1);
         }
 

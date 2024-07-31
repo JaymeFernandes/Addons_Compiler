@@ -1,14 +1,8 @@
 ﻿using Addons.Model;
-using Addons.Services.FileManager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Addons
 {
-    public class BehaviorPackController : IBehaviorPack
+    internal class BehaviorPackController : IBehaviorPack
     {
         public AddonManifest? Manifest { get; set; }
 
@@ -23,6 +17,14 @@ namespace Addons
         public void RegisterItem(IMinecraftItem item)
         {
             BehaviorPackManager.CreateItem(item.ToString(), item.Name);
+        }
+
+        public void RegisterItem(List<IMinecraftItem> items)
+        {
+            foreach (IMinecraftItem item in items)
+            {
+                RegisterItem(item);
+            }
         }
     }
 }
