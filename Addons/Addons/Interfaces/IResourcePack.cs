@@ -11,6 +11,6 @@ namespace Addons
     public interface IResourcePack
     {
         internal AddonManifest Manifest { get; set; }
-        internal Textures _Textures { get; set; }
+        internal Textures TextureCollection { get; set; }
     }
 }

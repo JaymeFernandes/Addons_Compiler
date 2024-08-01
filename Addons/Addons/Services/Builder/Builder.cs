@@ -34,8 +34,8 @@ namespace Addons
                     ResourcePackManager.SerName(addon.Name);
                     ResourcePackManager.Create(addon.Name, addon.Resource.Manifest);
 
-                    addon.Resource._Textures = ResourcePack.Textures.TextureLoader.Load(addon.Resource._Textures);
-                    addon.Resource._Textures.CreateFiles();
+                    addon.Resource.TextureCollection = ResourcePack.Textures.TextureLoader.Load(addon.Resource.TextureCollection);
+                    addon.Resource.TextureCollection.CreateFiles();
                 }
                 else
                 {

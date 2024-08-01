@@ -20,13 +20,13 @@ namespace Addons
 
         #endregion
 
-        #region Minecraft Item properties
+        #region Minecraft Item Properties
 
         private readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
         public Dictionary<string, object> Components { get; private set; } = new Dictionary<string, object>();
         public RenderItem Render { get; set; } = new RenderItem();
-        private object? _displayName; // Display name of the item
-        public bool StackedByData { get; set; } = true;  
+        private object? _displayName;
+        public bool StackedByData { get; set; } = true;
         public int MaxStackSize { get; set; } = 64;
         public bool Foil { get; set; } = false;
         public bool HandEquipped { get; set; } = true;
@@ -34,6 +34,8 @@ namespace Addons
         public int Damage { get; set; } = 0;
 
         #endregion
+
+        #region Builder
 
         /// <summary>
         /// Builds the JSON representation of the item.
@@ -43,14 +45,18 @@ namespace Addons
         {
             _minecraftItem["description"] = _minecraftDescription;
 
+            // Set required components
             Components["minecraft:render_offsets"] = Render.Renders;
-            if (_displayName != null) Components["minecraft:display_name"] = _displayName;
             Components["minecraft:stacked_by_data"] = StackedByData;
             Components["minecraft:max_stack_size"] = MaxStackSize;
             Components["minecraft:foil"] = Foil;
             Components["minecraft:hand_equipped"] = HandEquipped;
-            if (Duration > 0) Components["minecraft:use_duration"] = Duration;
-            if (Damage > 0) Components["minecraft:damage"] = Damage;
+
+            // Set optional components only if they have valid values
+            SetOptionalComponent("minecraft:use_duration", Duration, 0);
+            SetOptionalComponent("minecraft:damage", Damage, 0);
+            SetOptionalComponent("minecraft:display_name", _displayName);
+
             _minecraftItem["components"] = Components;
 
             _json.Propety(x =>
@@ -62,7 +68,36 @@ namespace Addons
             return _json.ToString();
         }
 
-        #region Definition methods
+        /// <summary>
+        /// Sets an optional component in the components dictionary if the value is not null.
+        /// </summary>
+        /// <param name="key">The component key.</param>
+        /// <param name="value">The component value.</param>
+        private void SetOptionalComponent(string key, object? value)
+        {
+            if (value != null)
+            {
+                Components[key] = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets an optional component in the components dictionary if the value is greater than the default value.
+        /// </summary>
+        /// <param name="key">The component key.</param>
+        /// <param name="value">The component value.</param>
+        /// <param name="defaultValue">The default value to compare against.</param>
+        private void SetOptionalComponent(string key, int value, int defaultValue)
+        {
+            if (value > defaultValue)
+            {
+                Components[key] = value;
+            }
+        }
+
+        #endregion
+
+        #region Definition Methods
 
         /// <summary>
         /// Sets the display name of the item.
@@ -70,6 +105,7 @@ namespace Addons
         /// <param name="name">The display name.</param>
         public void SetDisplayName(string name)
         {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Display name cannot be null or empty.", nameof(name));
             _displayName = new { value = name };
         }
 
@@ -79,6 +115,7 @@ namespace Addons
         /// <param name="name">The texture name.</param>
         public void SetTexture(string name)
         {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Texture name cannot be null or empty.", nameof(name));
             Components["minecraft:icon"] = new { texture = name };
         }
 
@@ -88,6 +125,7 @@ namespace Addons
         /// <param name="category">The category name.</param>
         public void SetCategory(string category)
         {
+            if (string.IsNullOrEmpty(category)) throw new ArgumentException("Category cannot be null or empty.", nameof(category));
             _minecraftDescription.Category = category;
         }
 
@@ -97,6 +135,7 @@ namespace Addons
         /// <param name="identifier">The identifier.</param>
         public void SetIdentifier(string identifier)
         {
+            if (string.IsNullOrEmpty(identifier)) throw new ArgumentException("Identifier cannot be null or empty.", nameof(identifier));
             _minecraftDescription.Identifier = identifier;
         }
 
@@ -109,7 +148,6 @@ namespace Addons
         public void SetProperty(string key, object value)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-
             Components[key] = value;
         }
 
@@ -118,9 +156,9 @@ namespace Addons
         /// </summary>
         /// <param name="hand">The hand type.</param>
         /// <param name="view">The view type.</param>
-        /// <param name="scale">The scale values.</param>
-        /// <param name="rotation">The rotation values.</param>
-        /// <param name="translation">The translation values.</param>
+        /// <param name="scale">The scale values (optional).</param>
+        /// <param name="rotation">The rotation values (optional).</param>
+        /// <param name="translation">The translation values (optional).</param>
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
             Render.AddRenderOffset(hand, view, scale, rotation, translation);
@@ -148,15 +186,26 @@ namespace Addons
     {
         public Dictionary<string, object> Renders { get; set; } = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenderItem"/> class.
+        /// </summary>
         public RenderItem()
         {
             AddRenderOffset(HandTypes.MainHand, ViewTypes.FirstPerson);
-            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson, scale:new float[] { 0.002f, 0.002f, 0.002f });
+            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson, new float[] { 0.002f, 0.002f, 0.002f });
         }
 
+        /// <summary>
+        /// Adds a render offset for the specified hand and view type.
+        /// </summary>
+        /// <param name="hand">The hand type.</param>
+        /// <param name="view">The view type.</param>
+        /// <param name="scale">The scale values (optional).</param>
+        /// <param name="rotation">The rotation values (optional).</param>
+        /// <param name="translation">The translation values (optional).</param>
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
-            if (scale == null) scale = new float[] { 0.001f, 0.001f, 0.001f };
+            scale ??= new float[] { 0.001f, 0.001f, 0.001f };
 
             if (!Renders.ContainsKey(hand.GetString()))
             {
