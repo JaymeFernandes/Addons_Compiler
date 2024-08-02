@@ -14,14 +14,14 @@ namespace Addons
             Manifest = manifest;
         }
 
-        public void RegisterItem(IMinecraftItem item)
+        public void RegisterItem(Item item)
         {
-            BehaviorPackManager.CreateItem(item.ToString(), item.Identifier.Replace(":", "_"));
+            BehaviorPackManager.CreateItem(item.ToString(), item._Model.Identifier.Replace(":", "_"));
         }
 
-        public void RegisterItem(List<IMinecraftItem> items)
+        public void RegisterItem(List<Item> items)
         {
-            foreach (IMinecraftItem item in items)
+            foreach (Item item in items)
             {
                 RegisterItem(item);
             }

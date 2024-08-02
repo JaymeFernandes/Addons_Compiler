@@ -6,14 +6,14 @@ namespace Addons
     /// <summary>
     /// Represents a Minecraft item with various properties and methods for manipulation.
     /// </summary>
-    public partial class Item
+    internal partial class ItemModel : IMinecraftItem
     {
         private readonly BaseJson _json = new BaseJson();
 
         #region Base
 
-        private const string FormatVersion = "1.16.100";
-        private readonly Description _minecraftDescription = new Description();
+        internal const string FormatVersion = "1.16.100";
+        internal readonly Description _minecraftDescription = new Description();
         public string? Identifier { get; set; }
         public ItemCategory? Category { get; set; }
 
@@ -21,9 +21,9 @@ namespace Addons
 
         #region Minecraft Item Properties
 
-        private readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
-        public Dictionary<string, object> Components { get; private set; } = new Dictionary<string, object>();
-        public RenderItem Render { get; set; } = new RenderItem();
+        internal readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
+        private Dictionary<string, object> Components { get; set; } = new Dictionary<string, object>();
+        private RenderItem? Render { get; set; }
         private object? _displayName;
         public bool StackedByData { get; set; } = true;
         public bool Foil { get; set; } = false;
@@ -45,23 +45,21 @@ namespace Addons
         /// <returns>The JSON string representing the item.</returns>
         public string BuildJson()
         {
-            _minecraftItem["description"] = _minecraftDescription;
-            SetOptionalComponent("minecraft:display_name", _displayName);
-
-            // Set required components
-            Components["minecraft:render_offsets"] = Render.Renders;
-            Components["minecraft:stacked_by_data"] = StackedByData;
-            Components["minecraft:max_stack_size"] = MaxStackSize;
-            Components["minecraft:foil"] = Foil;
-            Components["minecraft:hand_equipped"] = HandEquipped;
-
             // Set optional components only if they have valid values
             SetOptionalComponent("minecraft:can_destroy_in_creative", DestroyBlocksInCreative);
             SetOptionalComponent("minecraft:allow_off_hand", EquipWithSecondHand);
             SetOptionalComponent("minecraft:use_duration", Duration, 0);
             SetOptionalComponent("minecraft:damage", Damage, 0);
-            
+            SetOptionalComponent("minecraft:display_name", _displayName);
+            if(Render != null) SetOptionalComponent("minecraft:render_offsets", Render.Renders);
 
+            // Set required components
+            Components["minecraft:stacked_by_data"] = StackedByData;
+            Components["minecraft:max_stack_size"] = MaxStackSize;
+            Components["minecraft:foil"] = Foil;
+            Components["minecraft:hand_equipped"] = HandEquipped;
+
+            _minecraftItem["description"] = _minecraftDescription;
             _minecraftItem["components"] = Components;
 
             _json.Propety(x =>
@@ -142,6 +140,7 @@ namespace Addons
         /// <param name="translation">The translation values (optional).</param>
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
+            if (Render == null) Render = new RenderItem();
             Render.AddRenderOffset(hand, view, scale, rotation, translation);
         }
 
@@ -149,7 +148,15 @@ namespace Addons
         {
             var food = new Food();
             action(food);
+            SetOptionalComponent("minecraft:use_duration", food.UseDuration);
+            SetOptionalComponent("minecraft:use_animation", "eat");
+            SetOptionalComponent("minecraft:food", food.GetData());
+        }
 
+        public void IsFood()
+        {
+            var food = new Food();
+            SetOptionalComponent("minecraft:use_duration", food.UseDuration);
             SetOptionalComponent("minecraft:use_animation", "eat");
             SetOptionalComponent("minecraft:food", food.GetData());
         }

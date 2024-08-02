@@ -2,38 +2,40 @@
 
 namespace Addons
 {
-    partial class Item : IMinecraftItem
+    public partial class Item 
     {
+        internal ItemModel _Model = new ItemModel();
+
         public void Property(Action<IMinecraftItem> options)
         {
-            options(this);
+            options(_Model);
         }
 
         public override string ToString()
         {
 
-            if (!string.IsNullOrEmpty(Identifier)) _minecraftDescription.Identifier = Identifier;
-            else throw new ArgumentNullException(nameof(Identifier));
+            if (!string.IsNullOrEmpty(_Model.Identifier)) _Model._minecraftDescription.Identifier = _Model.Identifier;
+            else throw new ArgumentNullException(nameof(_Model.Identifier));
 
-            if (Category != null)
+            if (_Model.Category != null)
             {
                 
-                switch (Category)
+                switch (_Model.Category)
                 {
                     case ItemCategory.Misc:
-                        _minecraftDescription.Category = "misc";
+                        _Model._minecraftDescription.Category = "misc";
                         break;
                     case ItemCategory.Construction:
-                        _minecraftDescription.Category = "construction";
+                        _Model._minecraftDescription.Category = "construction";
                         break;
                     case ItemCategory.Items:
-                        _minecraftDescription.Category = "items";
+                        _Model._minecraftDescription.Category = "items";
                         break;
                     case ItemCategory.Nature:
-                        _minecraftDescription.Category = "nature";
+                        _Model._minecraftDescription.Category = "nature";
                         break;
                     case ItemCategory.Equipment:
-                        _minecraftDescription.Category = "equipment";
+                        _Model._minecraftDescription.Category = "equipment";
                         break;
                     default:
                         throw new NotImplementedException();
@@ -41,11 +43,11 @@ namespace Addons
             }
             else
             {
-                throw new ArgumentNullException(nameof(Category));
+                throw new ArgumentNullException(nameof(_Model.Category));
             }
 
             
-            return BuildJson();
+            return _Model.BuildJson();
         }
     }
 

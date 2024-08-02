@@ -9,18 +9,9 @@ namespace Addons
     /// <summary>
     /// Represents render properties of a Minecraft item.
     /// </summary>
-    public class RenderItem
+    internal class RenderItem
     {
-        public Dictionary<string, object> Renders { get; set; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RenderItem"/> class.
-        /// </summary>
-        public RenderItem()
-        {
-            AddRenderOffset(HandTypes.MainHand, ViewTypes.FirstPerson);
-            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson, new float[] { 0.002f, 0.002f, 0.002f });
-        }
+        internal Dictionary<string, object> Renders { get; set; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Adds a render offset for the specified hand and view type.
@@ -30,8 +21,9 @@ namespace Addons
         /// <param name="scale">The scale values (optional).</param>
         /// <param name="rotation">The rotation values (optional).</param>
         /// <param name="translation">The translation values (optional).</param>
-        public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
+        internal void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
+
             scale ??= new float[] { 0.001f, 0.001f, 0.001f };
 
             if (!Renders.ContainsKey(hand.GetString()))

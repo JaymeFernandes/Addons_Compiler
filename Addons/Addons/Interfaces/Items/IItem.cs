@@ -47,15 +47,38 @@ namespace Addons
         public bool DestroyBlocksInCreative { get; set; }
         public bool EquipWithSecondHand { get; set; }
 
+        /// <summary>
+        /// Sets the texture of the item.
+        /// </summary>
+        /// <param name="name">The texture name.</param>
         public void SetTexture(string name);
 
-        public void Property(Action<IMinecraftItem> options);
-
+        /// <summary>
+        /// Sets the display name of the item.
+        /// </summary>
+        /// <param name="name">The display name.</param>
         public void SetDisplayName(string name);
 
+        /// <summary>
+        /// Adds a render offset to the item.
+        /// </summary>
+        /// <param name="hand">The hand type.</param>
+        /// <param name="view">The view type.</param>
+        /// <param name="scale">The scale values (optional).</param>
+        /// <param name="rotation">The rotation values (optional).</param>
+        /// <param name="translation">The translation values (optional).</param>
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null);
 
+        /// <summary>
+        /// Configures the item to be edible with specific properties.
+        /// </summary>
+        /// <param name="action">A delegate to configure the food properties.</param>
         public void IsFood(Action<Food> action);
+
+        /// <summary>
+        /// Configures the item to be edible with default properties.
+        /// </summary>
+        public void IsFood();
     }
 
 

@@ -15,12 +15,13 @@ Welcome to **Addon Compiler**! 🎉 This amazing project transforms C# code into
 
 ## 📋 Table of Contents
 
-- [Introduction](#introduction-🌟)
-- [Installation](#installation-📦)
-- [Usage](#usage-🚀)
-- [Code Example](#code-example-💻)
-- [Contribution](#contribution-🤝)
-- [License](#license-📄)
+- [Introduction](#introduction-)
+- [Installation](#installation-)
+- [Usage](#usage-)
+- [Code Example Base](#code-example-)
+- [Creating Items](./example/README.md)
+- [Contribution](#contribution-)
+- [License](#license-)
 
 ## Introduction 🌟
 
@@ -65,7 +66,7 @@ namespace Project
     public class Program
     {
         // Create the texture
-        // [Texture(Directory, Item type)]
+        // [Texture(Directory, Texture type)]
         [Texture("./SwordTexture.png", TextureType.Items)]
         public Texture Sword { get; set; } = new Texture("iron_sword"); // Texture name
 
@@ -78,19 +79,6 @@ namespace Project
                 .AddResource(); // Texture pack
 
             var app = builder.Base();
-
-            Item item = new Item();
-
-            item.Property(x =>
-            {
-                x.Name = "Sword Iron";
-                x.Identifier = "Sword:Iron_Sword";
-                x.StackedByData = false;
-                x.MaxStackSize = 1;
-                x.Damage = 5;
-            });
-
-            app.Behavior.RegisterItem(item);
 
             app.CreateMcAddonFile();
         }

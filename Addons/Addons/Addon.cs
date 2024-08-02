@@ -109,7 +109,7 @@ The Custom Addon Compiler is a tool designed to streamline the creation of Minec
 
 For more information, updates, and to contribute, please visit the GitHub repository:
 
-🔗 [GitHub Repository](https://github.com/YourUsername/CustomAddonCompiler)
+🔗 [GitHub Repository](https://github.com/JaymeFernandes/Addons_Compiler)
 
 ## 👨‍💻 Author
 

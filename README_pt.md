@@ -15,12 +15,13 @@ Bem-vindo ao **Addon Compiler**! 🎉 Este projeto incrível transforma código 
 
 ## 📋 Índice
 
-- [Introdução](#introdução-🌟)
-- [Instalação](#instalação-📦)
-- [Uso](#uso-🚀)
-- [Exemplo de Código](#exemplo-de-código-💻)
-- [Contribuição](#contribuição-📜)
-- [Licença](#licença-📄)
+- [Introdução](#introdução-)
+- [Instalação](#instalação-)
+- [Uso](#uso-)
+- [Exemplo de Código Base](#exemplo-de-código-)
+- [Criando Itens](./example//README_pt.MD)
+- [Contribuição](#contribuição-)
+- [Licença](#licença-)
 
 ## Introdução 🌟
 
@@ -65,7 +66,7 @@ namespace Project
     public class Program
     {
         // Cria a textura
-        // [Texture(Diretorio, Tipo do item)]
+        // [Texture(Diretorio, Tipo de Texture)]
         [Texture("./SwordTexture.png", TextureType.Items)]
         public Texture Sword { get; set; } = new Texture("iron_sword"); // Nome da textura
 
@@ -83,8 +84,9 @@ namespace Project
 
             item.Property(x =>
             {
-                x.Name = "Sword Iron";
+                x.SetDisplayName("Sword_food");
                 x.Identifier = "Sword:Iron_Sword";
+                x.Category = ItemCategory.Items;
                 x.StackedByData = false;
                 x.MaxStackSize = 1;
                 x.Damage = 5;

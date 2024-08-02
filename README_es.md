@@ -16,12 +16,13 @@
 
 ## 📋 Tabla de Contenidos
 
-- [Introducción](#introducción-🌟)
-- [Instalación](#instalación-📦)
-- [Uso](#uso-🚀)
-- [Ejemplo de Código](#ejemplo-de-código-💻)
-- [Contribución](#contribución-🤝)
-- [Licencia](#licencia-📄)
+- [Introducción](#introducción-)
+- [Instalación](#instalación-)
+- [Uso](#uso-)
+- [Ejemplo de Código Base](#ejemplo-de-código-)
+- [Creando Ítems](./example/README_es.md)
+- [Contribución](#contribución-)
+- [Licencia](#licencia-)
 
 ## Introducción 🌟
 
@@ -66,7 +67,7 @@ namespace Project
     public class Program
     {
         // Crea la textura
-        // [Texture(Directorio, Tipo de objeto)]
+        // [Texture(Directorio, Tipo de Texture)]
         [Texture("./SwordTexture.png", TextureType.Items)]
         public Texture Sword { get; set; } = new Texture("iron_sword"); // Nombre de la textura
 
@@ -79,17 +80,6 @@ namespace Project
                 .AddResource(); // Paquete de texturas
 
             var app = builder.Base();
-
-            Item item = new Item();
-
-            item.Property(x =>
-            {
-                x.Name = "Sword Iron";
-                x.Identifier = "Sword:Iron_Sword";
-                x.StackedByData = false;
-                x.MaxStackSize = 1;
-                x.Damage = 5;
-            });
 
             app.Behavior.RegisterItem(item);
 
