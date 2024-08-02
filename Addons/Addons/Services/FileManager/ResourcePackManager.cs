@@ -46,7 +46,10 @@ namespace Addons
 
             string json = manifest.ToString();
 
+            File.WriteAllText($"{_Folder}README.md", ReadMe.Read);
+
             if (!File.Exists($"{_Folder}manifest.json")) File.WriteAllText($"{_Folder}/manifest.json", json);
+
             Logs.Loading("Generating ResourcePack", $"Create manifest ( \"./manifest.json\" )", Logs.Status.Complete, Base.Count + 1, Base.Count + 1);
         }
 

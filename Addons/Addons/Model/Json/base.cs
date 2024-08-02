@@ -18,7 +18,7 @@ namespace Addons.Model
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(data, Formatting.Indented);
+            return $"{JsonConvert.SerializeObject(data, Formatting.Indented)}";
         }
     }
 }

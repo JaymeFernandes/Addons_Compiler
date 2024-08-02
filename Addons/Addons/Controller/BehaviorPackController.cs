@@ -16,7 +16,7 @@ namespace Addons
 
         public void RegisterItem(IMinecraftItem item)
         {
-            BehaviorPackManager.CreateItem(item.ToString(), item.Name);
+            BehaviorPackManager.CreateItem(item.ToString(), item.Identifier.Replace(":", "_"));
         }
 
         public void RegisterItem(List<IMinecraftItem> items)

@@ -5,11 +5,6 @@ namespace Addons
     public interface IMinecraftItem
     {
         /// <summary>
-        /// Gets or sets the name of the item.
-        /// </summary>
-        public string? Name { get; set; }
-
-        /// <summary>
         /// Gets or sets the identifier of the item.
         /// </summary>
         public string? Identifier { get; set; }
@@ -49,6 +44,9 @@ namespace Addons
         /// </summary>
         public int Damage { get; set; }
 
+        public bool DestroyBlocksInCreative { get; set; }
+        public bool EquipWithSecondHand { get; set; }
+
         public void SetTexture(string name);
 
         public void Property(Action<IMinecraftItem> options);
@@ -57,6 +55,7 @@ namespace Addons
 
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null);
 
+        public void IsFood(Action<Food> action);
     }
 
 

@@ -33,6 +33,9 @@ namespace Addons
                     AddFolderToZip(archive, _FolderR, $"Behavior_{_Name}");
                 }
             }
+
+            File.WriteAllText($"./com.mojang/README.md", ReadMe.Read);
+
         }
 
         private static void AddFolderToZip(ZipArchive archive, string folderPath, string entryFolderName)

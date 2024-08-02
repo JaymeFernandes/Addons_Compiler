@@ -11,13 +11,8 @@ namespace Addons
 
         public override string ToString()
         {
-            if (_displayName == null)
-            {
-                if(String.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
-                SetDisplayName(Name);
-            }
 
-            if (!string.IsNullOrEmpty(Identifier)) SetIdentifier(Identifier);
+            if (!string.IsNullOrEmpty(Identifier)) _minecraftDescription.Identifier = Identifier;
             else throw new ArgumentNullException(nameof(Identifier));
 
             if (Category != null)

@@ -14,7 +14,6 @@ namespace Addons
 
         private const string FormatVersion = "1.16.100";
         private readonly Description _minecraftDescription = new Description();
-        public string? Name { get; set; }
         public string? Identifier { get; set; }
         public ItemCategory? Category { get; set; }
 
@@ -27,11 +26,14 @@ namespace Addons
         public RenderItem Render { get; set; } = new RenderItem();
         private object? _displayName;
         public bool StackedByData { get; set; } = true;
-        public int MaxStackSize { get; set; } = 64;
         public bool Foil { get; set; } = false;
         public bool HandEquipped { get; set; } = true;
+        public bool DestroyBlocksInCreative { get; set; } = false;
+        public bool EquipWithSecondHand { get; set; } = false;
+        public int MaxStackSize { get; set; } = 64;
         public int Duration { get; set; } = 0;
         public int Damage { get; set; } = 0;
+        
 
         #endregion
 
@@ -44,6 +46,7 @@ namespace Addons
         public string BuildJson()
         {
             _minecraftItem["description"] = _minecraftDescription;
+            SetOptionalComponent("minecraft:display_name", _displayName);
 
             // Set required components
             Components["minecraft:render_offsets"] = Render.Renders;
@@ -53,9 +56,11 @@ namespace Addons
             Components["minecraft:hand_equipped"] = HandEquipped;
 
             // Set optional components only if they have valid values
+            SetOptionalComponent("minecraft:can_destroy_in_creative", DestroyBlocksInCreative);
+            SetOptionalComponent("minecraft:allow_off_hand", EquipWithSecondHand);
             SetOptionalComponent("minecraft:use_duration", Duration, 0);
             SetOptionalComponent("minecraft:damage", Damage, 0);
-            SetOptionalComponent("minecraft:display_name", _displayName);
+            
 
             _minecraftItem["components"] = Components;
 
@@ -95,6 +100,14 @@ namespace Addons
             }
         }
 
+        private void SetOptionalComponent(string key, bool value)
+        {
+            if (value)
+            {
+                Components[key] = value;
+            }
+        }
+
         #endregion
 
         #region Definition Methods
@@ -120,38 +133,6 @@ namespace Addons
         }
 
         /// <summary>
-        /// Sets the category of the item.
-        /// </summary>
-        /// <param name="category">The category name.</param>
-        public void SetCategory(string category)
-        {
-            if (string.IsNullOrEmpty(category)) throw new ArgumentException("Category cannot be null or empty.", nameof(category));
-            _minecraftDescription.Category = category;
-        }
-
-        /// <summary>
-        /// Sets the identifier of the item.
-        /// </summary>
-        /// <param name="identifier">The identifier.</param>
-        public void SetIdentifier(string identifier)
-        {
-            if (string.IsNullOrEmpty(identifier)) throw new ArgumentException("Identifier cannot be null or empty.", nameof(identifier));
-            _minecraftDescription.Identifier = identifier;
-        }
-
-        /// <summary>
-        /// Sets a property of the item.
-        /// </summary>
-        /// <param name="key">The property key.</param>
-        /// <param name="value">The property value.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the key is null or empty.</exception>
-        public void SetProperty(string key, object value)
-        {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            Components[key] = value;
-        }
-
-        /// <summary>
         /// Adds a render offset to the item.
         /// </summary>
         /// <param name="hand">The hand type.</param>
@@ -164,87 +145,15 @@ namespace Addons
             Render.AddRenderOffset(hand, view, scale, rotation, translation);
         }
 
+        public void IsFood(Action<Food> action)
+        {
+            var food = new Food();
+            action(food);
+
+            SetOptionalComponent("minecraft:use_animation", "eat");
+            SetOptionalComponent("minecraft:food", food.GetData());
+        }
+
         #endregion
-    }
-
-    /// <summary>
-    /// Represents the description of a Minecraft item.
-    /// </summary>
-    public sealed class Description
-    {
-        [JsonProperty("identifier")]
-        public string? Identifier { get; set; }
-
-        [JsonProperty("category")]
-        public string? Category { get; set; }
-    }
-
-    /// <summary>
-    /// Represents render properties of a Minecraft item.
-    /// </summary>
-    public class RenderItem
-    {
-        public Dictionary<string, object> Renders { get; set; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RenderItem"/> class.
-        /// </summary>
-        public RenderItem()
-        {
-            AddRenderOffset(HandTypes.MainHand, ViewTypes.FirstPerson);
-            AddRenderOffset(HandTypes.MainHand, ViewTypes.ThirdPerson, new float[] { 0.002f, 0.002f, 0.002f });
-        }
-
-        /// <summary>
-        /// Adds a render offset for the specified hand and view type.
-        /// </summary>
-        /// <param name="hand">The hand type.</param>
-        /// <param name="view">The view type.</param>
-        /// <param name="scale">The scale values (optional).</param>
-        /// <param name="rotation">The rotation values (optional).</param>
-        /// <param name="translation">The translation values (optional).</param>
-        public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
-        {
-            scale ??= new float[] { 0.001f, 0.001f, 0.001f };
-
-            if (!Renders.ContainsKey(hand.GetString()))
-            {
-                Renders[hand.GetString()] = new Dictionary<string, object>();
-            }
-
-            var handDict = (Dictionary<string, object>)Renders[hand.GetString()];
-
-            var viewDict = new Dictionary<string, object>
-            {
-                ["scale"] = scale
-            };
-            if (rotation != null) viewDict["rotation"] = rotation;
-            if (translation != null) viewDict["translation"] = translation;
-
-            handDict[view.GetString()] = viewDict;
-        }
-    }
-
-    internal static class RenderExtension
-    {
-        internal static string GetString(this ViewTypes type)
-        {
-            return type switch
-            {
-                ViewTypes.FirstPerson => "first_person",
-                ViewTypes.ThirdPerson => "third_person",
-                _ => string.Empty,
-            };
-        }
-
-        internal static string GetString(this HandTypes type)
-        {
-            return type switch
-            {
-                HandTypes.MainHand => "main_hand",
-                HandTypes.OffHand => "off_hand",
-                _ => string.Empty,
-            };
-        }
     }
 }
