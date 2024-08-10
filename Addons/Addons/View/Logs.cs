@@ -6,152 +6,78 @@ namespace Addons
 {
     internal static partial class Logs
     {
-        private static int _cursorDefaultPosition = -1;
-        private static int _cursorPosition = -1;
-        private static int num = 10;
-        private static List<string> _logs = new List<string>();
-        public static bool ViewLogs = true;
-
-        private static void UpdateCursorPosition()
+        private static int CalculateProgressPercentage(int completed, int total)
         {
-            _cursorPosition = Console.CursorTop;
+            // Calcula a porcentagem de progresso
+            return (int)((double)completed / total * 100);
         }
 
-        public static void Loading(string title, string message, Status status, int currentPosition, int totalProcesses)
+        internal static void Log(string message, Status status, int completed, int total)
         {
-            if (_cursorDefaultPosition == -1) _cursorDefaultPosition = Console.CursorTop;
-            if (currentPosition == 0) currentPosition++;
-            if (status == Status.Complete) _logs.Add(message);
+            int progressBarPosition = Console.WindowHeight - 2;
+            int progressPercentage = CalculateProgressPercentage(completed, total);
 
-            ResetCursorToDefaultPosition();
+            // Move o cursor para o topo do console para limpar as linhas
+            Console.SetCursorPosition(0, 0);
 
-            int positionPercentage = (40 * currentPosition) / totalProcesses;
-            int percentage = (positionPercentage * 100) / 40;
-
-            PrintLoadingTitle(title);
-            PrintProgressBar(positionPercentage);
-
-            if (ViewLogs)
+            for (int i = 0; i < 5; i++)
             {
-                PrintLogs();
-
-                if (status == Status.Running) Process(message, status);
+                Console.WriteLine(new string(' ', Console.WindowWidth));
             }
 
-            if (currentPosition == totalProcesses && status == Status.Complete)
-            {
-                ResetLoading();
-            }
+            Console.SetCursorPosition(0, 0);
+
+            // Exibe o log
+            PrintProcessMessage(message, status);
+
+            // Atualiza a barra de progresso
+            UpdateProgressBar(progressPercentage, progressBarPosition);
         }
 
-        private static void ResetCursorToDefaultPosition()
+        private static void UpdateProgressBar(int progressPercentage, int progressBarPosition)
         {
-            Console.CursorTop = _cursorDefaultPosition;
-            Console.CursorLeft = 0;
-        }
+            int position = Console.CursorTop;
 
-        private static void PrintLoadingTitle(string title)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine($"[ {title} ]");
-            Console.ResetColor();
-        }
+            const int progressBarWidth = 50; // Define o tamanho da barra de progresso
 
-        private static void PrintProgressBar(int positionPercentage)
-        {
-            Console.Write("[");
+            // Normaliza o valor de progresso para a faixa de 0 a 100
+            int normalizedProgress = Math.Max(0, Math.Min(100, progressPercentage));
+
+            // Calcula quantos caracteres preencher na barra de progresso
+            int filledLength = (normalizedProgress * progressBarWidth) / 100;
+            int emptyLength = progressBarWidth - filledLength;
+
+            // Move o cursor para a posição da barra de progresso
+            Console.SetCursorPosition(0, progressBarPosition);
+
+            // Escreve a barra de progresso com 50 caracteres de largura
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(new string('|', positionPercentage) + new string(' ', 40 - positionPercentage));
-            Console.ResetColor();
-            Console.WriteLine("]");
-        }
-
-        private static void PrintLogs()
-        {
-            foreach (var log in _logs)
-            {
-                Process(log, Status.Complete);
-            }
-        }
-
-        private static void ResetLoading()
-        {
-            Console.CursorTop = _logs.Count + num;
-
-            num =+ _logs.Count;
-
-            _cursorDefaultPosition = -1;
-            _cursorPosition = -1;
-
-            if(ViewLogs) Thread.Sleep(1000);
-            Console.Clear();
-            _logs.Clear();
+            Console.Write($"Progress: {normalizedProgress}% ");
             
+            Console.ResetColor();
+            Console.Write($"[{new string('#', filledLength)}{new string('.', emptyLength)}]");
+
+            Console.SetCursorPosition(0, position);
         }
 
-        public static void Process(string message, Status status)
-        {
-            if (_cursorPosition == -1) UpdateCursorPosition();
-
-            Console.CursorTop = _cursorPosition;
-            Console.CursorLeft = 0;
-
-            string timestamp = $"[{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}]";
-            string statusMessage = $"{message} - {status.GetString()}";
-            string output = $"{timestamp} {statusMessage}";
-
-            if (ViewLogs)
-            {
-                PrintProcessMessage(timestamp, message, status);
-                PrintProcessStatus(status, output.Length);
-            }
-
-            if (status == Status.Complete || status == Status.Failed)
-            {
-                ResetProcess();
-            }
-        }
-
-        private static void PrintProcessMessage(string timestamp, string message, Status status)
+        private static void PrintProcessMessage( string message, Status status)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write(timestamp);
+            Console.Write(DateTime.Now.ToString("[dd/MM/yy]"));
             Console.ResetColor();
             Console.Write($" {message} - ");
+
+            if(status == Status.Complete) Console.ForegroundColor = ConsoleColor.Green;
+            else Console.ForegroundColor = ConsoleColor.Red;
+
+            Console.WriteLine($"{status.GetString()}".PadRight(100, ' '));
+
+            if(status == Status.Failed) Console.ReadLine();
         }
 
-        private static void PrintProcessStatus(Status status, int outputLength)
-        {
-            switch (status)
-            {
-                case Status.Running:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case Status.Complete:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    break;
-                case Status.Failed:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                default:
-                    Console.ResetColor();
-                    break;
-            }
-
-            Console.Write(status.GetString().PadRight(100 - outputLength));
-            if (status == Status.Complete || status == Status.Failed) Console.WriteLine();
-            Console.ResetColor();
-        }
-
-        private static void ResetProcess()
-        {
-            Console.CursorLeft = 0;
-            _cursorPosition = -1;
-        }
 
         public enum Status
         {
-            Running,
             Complete,
             Failed
         }
@@ -160,11 +86,11 @@ namespace Addons
         {
             return status switch
             {
-                Status.Running => "[ Running ]",
                 Status.Complete => "[ Complete ]",
                 Status.Failed => "[ Failed ]",
                 _ => string.Empty
             };
         }
+
     }
 }

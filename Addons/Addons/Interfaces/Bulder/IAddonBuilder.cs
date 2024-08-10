@@ -13,11 +13,5 @@
         IAddonBuilder SetVersion(List<int> version);
 
         IAddonBuilder SetMinVersion(string version);
-
-        IAddonBuilder AddBehavior();
-
-        IAddonBuilder AddResource();
-
-        IAddonBuilder BuildLogs(bool value);
     }
 }

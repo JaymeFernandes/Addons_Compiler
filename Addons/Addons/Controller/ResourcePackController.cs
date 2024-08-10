@@ -76,9 +76,8 @@ namespace Addons
 
             private void CreateFile(TexturePack texturePack, string fileName, int index)
             {
-                Logs.Loading("Create Jsons Textures", $"Creating Manifest: ( \"./{fileName}\" )", Logs.Status.Running, index, 7);
                 ResourcePackManager.CreateJson(texturePack);
-                Logs.Loading("Create Jsons Textures", $"Created Manifest: ( \"./{fileName}\" )", Logs.Status.Complete, index, 7);
+                Logs.Log($"Created Manifest: ( \"./{fileName}\" )", Logs.Status.Complete, index, 7);
             }
 
             /// <summary>
@@ -95,8 +94,6 @@ namespace Addons
 
                 if (string.IsNullOrEmpty(path))
                     throw new ArgumentException("Texture path cannot be null or empty.", nameof(path));
-
-                Logs.Process($"Add Texture: {name}", Logs.Status.Running);
 
                 switch (type)
                 {
@@ -124,8 +121,6 @@ namespace Addons
                     default:
                         throw new ArgumentOutOfRangeException(nameof(type), "Unknown texture type.");
                 }
-
-                Logs.Process($"Add Texture: {name}", Logs.Status.Complete);
             }
 
             /// <summary>
@@ -163,26 +158,26 @@ namespace Addons
                             if (property.PropertyType == typeof(Texture.Texture))
                             {
                                 var attribute = property.GetCustomAttribute<TextureAttribute>();
-                                Logs.Loading("Loading Textures...", $"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.Running, position, properties.Length + 1);
+                                Logs.Log($"Processing property '{property.Name}' in '{type.Name}'.", Logs.Status.Complete, position, properties.Length + 1);
 
                                 var instance = Activator.CreateInstance(type);
                                 var value = property.GetValue(instance) as Texture.Texture;
 
                                 if (attribute == null)
                                 {
-                                    Logs.Loading("Loading Textures...", $"Attribute not found for property '{property.Name}' in '{type.Name}'.", Logs.Status.Failed, position, properties.Length + 1);
+                                    Logs.Log($"Attribute not found for property '{property.Name}' in '{type.Name}'.", Logs.Status.Failed, position, properties.Length + 1);
                                     throw new ArgumentNullException(nameof(attribute));
                                 }
 
                                 if (value == null)
                                 {
-                                    Logs.Loading("Loading Textures...", $"Value is null for property '{property.Name}' in '{type.Name}'.", Logs.Status.Failed, position, properties.Length + 1);
+                                    Logs.Log($"Value is null for property '{property.Name}' in '{type.Name}'.", Logs.Status.Failed, position, properties.Length + 1);
                                     throw new ArgumentNullException(nameof(value));
                                 }
 
-                                Logs.Loading("Loading Textures...", $"Processed property '{property.Name}' in '{type.Name}'.", Logs.Status.Complete, position, properties.Length + 1);
-
                                 texture.AddTexture(value.Name, attribute.Path, attribute.Type, value.Folder ?? "");
+                                
+                                Logs.Log($"Processed property '{property.Name}' in '{type.Name}'.", Logs.Status.Complete, position, properties.Length + 1);
                             }
                         }
                     }

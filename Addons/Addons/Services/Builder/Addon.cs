@@ -16,6 +16,7 @@ namespace Addons
         public void CreateMcAddonFile()
         {
             McAddonManager.CreateMcAddonFile();
+
         }
     }
 }

@@ -24,6 +24,9 @@ namespace Addons
             /// <exception cref="ArgumentException">Thrown when Behavior or Resource is null.</exception>
             public Addon Base()
             {
+                AddBehavior();
+                AddResource();
+
                 if (addon.Behavior?.Manifest != null && addon.Resource?.Manifest != null)
                 {
                     McAddonManager.SetName(addon.Name);
@@ -43,13 +46,6 @@ namespace Addons
                 }
 
                 return addon;
-            }
-
-            public IAddonBuilder BuildLogs(bool value)
-            {
-                Logs.ViewLogs = value;
-
-                return this;
             }
 
 

@@ -39,9 +39,11 @@ namespace Addons
         {
             foreach (var path in Base)
             {
-                Logs.Loading("Generating ResourcePack", $"Create Folder ( \"{path}\" )", Logs.Status.Running, Base.IndexOf(path), Base.Count + 1);
                 Directory.CreateDirectory($"{_Folder}/{path}");
-                Logs.Loading("Generating ResourcePack", $"Create Folder ( \"{path}\" )", Logs.Status.Complete, Base.IndexOf(path), Base.Count + 1);
+
+                Logs.Status _status = (Path.Exists($"{_Folder}{path}") ? Logs.Status.Complete : Logs.Status.Failed);
+
+                Logs.Log($"Create Folder ( \"{path}\" )", _status, Base.IndexOf(path), Base.Count + 1);
             }
 
             string json = manifest.ToString();
@@ -50,7 +52,9 @@ namespace Addons
 
             if (!File.Exists($"{_Folder}manifest.json")) File.WriteAllText($"{_Folder}/manifest.json", json);
 
-            Logs.Loading("Generating ResourcePack", $"Create manifest ( \"./manifest.json\" )", Logs.Status.Complete, Base.Count + 1, Base.Count + 1);
+            Logs.Status status = (Path.Exists($"{_Folder}manifest.json") ? Logs.Status.Complete : Logs.Status.Failed);
+
+            Logs.Log($"Create manifest ( \"./manifest.json\" )", status, Base.Count + 1, Base.Count + 1);
         }
 
         public static void CreateJson(TexturePack texturePack)
