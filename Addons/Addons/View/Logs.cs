@@ -28,6 +28,7 @@ namespace Addons
             Console.SetCursorPosition(0, 0);
 
             // Exibe o log
+            Console.WriteLine($"Completed {completed} of {total} processes");
             PrintProcessMessage(message, status);
 
             // Atualiza a barra de progresso
