@@ -74,9 +74,7 @@ namespace Project
         {
             var builder = new Addon.Builder()
                 .SetName("MyAddon")
-                .SetDescription("Custom addon")
-                .AddBehavior() // Behavior pack
-                .AddResource(); // Texture pack
+                .SetDescription("Custom addon");
 
             var app = builder.Base();
 

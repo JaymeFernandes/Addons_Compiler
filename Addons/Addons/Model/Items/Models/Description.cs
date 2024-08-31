@@ -13,6 +13,20 @@ namespace Addons
     /// </summary>
     public sealed class Description
     {
+        public Description(string identifier, ItemCategory category)
+        {
+            this.Identifier = identifier;
+            this.Category = category switch
+            {
+                ItemCategory.Misc => "misc",
+                ItemCategory.Construction => "construction",
+                ItemCategory.Items => "items",
+                ItemCategory.Nature => "nature",
+                ItemCategory.Equipment => "equipment",
+                _ => throw new NotImplementedException()
+            };
+        }
+
         [JsonProperty("identifier")]
         public string? Identifier { get; set; }
 

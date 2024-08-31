@@ -1,49 +1,46 @@
 ﻿using Addons.Model;
-using Addons.Texture;
-using System.Reflection;
-
 namespace Addons
 {
     public partial class Addon
     {
+        internal Addon() { }
+
+        public static IAddonBuilder CreateBuilder() => new Builder();
+        public static IAddonBuilder CreateBuilder(string name) => new Builder(name);
+        public static IAddonBuilder CreateBuilder(string name, string description) => new Builder(name, description);
+
 
         /// <summary>
         /// Builder class for constructing <see cref="Addon"/> instances.
         /// </summary>
-        public partial class Builder : IAddonBuilder
+        private partial class Builder : IAddonBuilder
         {
-            private readonly Addon addon;
-            private const int VersionMaxLength = 3;
+            internal Builder() => addon = new Addon();
+            internal Builder(string name) : this() => addon.Name = name;
+            internal Builder(string name, string description) : this(name) => addon.Description = description;
 
-            public Builder() => addon = new Addon();
 
             /// <summary>
             /// Builds and returns the constructed <see cref="Addon"/> instance.
             /// </summary>
             /// <returns>The constructed <see cref="Addon"/> instance.</returns>
             /// <exception cref="ArgumentException">Thrown when Behavior or Resource is null.</exception>
-            public Addon Base()
+            public Addon Build()
             {
                 AddBehavior();
                 AddResource();
 
-                if (addon.Behavior?.Manifest != null && addon.Resource?.Manifest != null)
-                {
-                    McAddonManager.SetName(addon.Name);
+                if(addon.Behavior is null || addon.Resource is null) throw new ArgumentNullException($"{nameof(addon.Behavior)}/{nameof(addon.Resource)}");
 
-                    BehaviorPackManager.SerName(addon.Name);
-                    BehaviorPackManager.Create(addon.Name, addon.Behavior.Manifest);
+                McAddonManager.SetName(addon.Name);
+                BehaviorPackManager.SerName(addon.Name);
+                ResourcePackManager.SerName(addon.Name);
 
-                    ResourcePackManager.SerName(addon.Name);
-                    ResourcePackManager.Create(addon.Name, addon.Resource.Manifest);
+                BehaviorPackManager.Create(addon.Name, addon.Behavior.Manifest);
+                ResourcePackManager.Create(addon.Name, addon.Resource.Manifest);
 
-                    addon.Resource.TextureCollection = ResourcePack.Textures.TextureLoader.Load(addon.Resource.TextureCollection);
-                    addon.Resource.TextureCollection.CreateFiles();
-                }
-                else
-                {
-                    throw new ArgumentException("Behavior or Resource is null");
-                }
+                addon.Resource.TextureCollection = ResourcePack.Textures.TextureLoader.Load(addon.Resource.TextureCollection);
+                addon.Resource.TextureCollection.CreateFiles();
 
                 return addon;
             }
@@ -58,7 +55,6 @@ namespace Addons
             public IAddonBuilder SetName(string name)
             {
                 if (String.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-
                 addon.Name = name;
                 return this;
             }
@@ -72,7 +68,6 @@ namespace Addons
             public IAddonBuilder SetDescription(string description)
             {
                 if (String.IsNullOrEmpty(description)) throw new ArgumentNullException(nameof(description));
-
                 addon.Description = description;
                 return this;
             }
@@ -116,7 +111,7 @@ namespace Addons
                 var versionAddon = ParseVersion(version);
                 ValidateVersion(versionAddon);
 
-                addon.Minversion = versionAddon;
+                addon.MinVersion = versionAddon;
                 return this;
             }
 
@@ -129,7 +124,7 @@ namespace Addons
             public IAddonBuilder SetMinVersion(List<int> version)
             {
                 ValidateVersion(version);
-                addon.Minversion = version;
+                addon.MinVersion = version;
                 return this;
             }
 
@@ -174,17 +169,17 @@ namespace Addons
             /// </summary>
             /// <returns>The current instance of the <see cref="CreateBuilder"/>.</returns>
             /// <exception cref="ArgumentException">Thrown when the behavior pack is already defined or when the addon name/description is null or empty.</exception>
-            public IAddonBuilder AddBehavior()
+            private IAddonBuilder AddBehavior()
             {
                 if (addon.Behavior != null) throw new ArgumentException("Behavior has already been defined");
 
                 if (String.IsNullOrEmpty(addon.Description)) throw new ArgumentNullException(nameof(addon.Description));
                 if (String.IsNullOrEmpty(addon.Name)) throw new ArgumentNullException(nameof(addon.Name));
 
-                var manifesB = new AddonManifest(addon.Name, addon.Description);
-                manifesB.AddModules(new AddonModules(AddonType.Data, addon.Description));
+                var manifestB = new AddonManifest(addon.Name, addon.Description);
+                manifestB.AddModules(new AddonModules(AddonType.Data, addon.Description));
 
-                addon.Behavior = new BehaviorPackController(manifesB);
+                addon.Behavior = new BehaviorPackController(manifestB);
                 return this;
             }
 
@@ -193,22 +188,24 @@ namespace Addons
             /// </summary>
             /// <returns>The current instance of the <see cref="CreateBuilder"/>.</returns>
             /// <exception cref="ArgumentException">Thrown when the resource pack is already defined or when the addon name/description is null or empty.</exception>
-            public IAddonBuilder AddResource()
+            private IAddonBuilder AddResource()
             {
                 if (addon.Resource != null) throw new ArgumentException("Resource has already been defined");
 
                 if (String.IsNullOrEmpty(addon.Description)) throw new ArgumentNullException(nameof(addon.Description));
                 if (String.IsNullOrEmpty(addon.Name)) throw new ArgumentNullException(nameof(addon.Name));
 
-                var manifesR = new AddonManifest(addon.Name, addon.Description);
-                manifesR.AddModules(new AddonModules(AddonType.Resources, addon.Description));
+                var manifestR = new AddonManifest(addon.Name, addon.Description);
+                manifestR.AddModules(new AddonModules(AddonType.Resources, addon.Description));
 
-                addon.Resource = new ResourcePack(manifesR);
+                addon.Resource = new ResourcePack(manifestR);
 
                 return this;
             }
 
             
+            private readonly Addon addon;
+            private const int VersionMaxLength = 3;
         }
     }
 }

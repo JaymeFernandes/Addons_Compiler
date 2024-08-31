@@ -8,37 +8,6 @@ namespace Addons
     /// </summary>
     internal partial class ItemModel : IMinecraftItem
     {
-        private readonly BaseJson _json = new BaseJson();
-
-        #region Base
-
-        internal const string FormatVersion = "1.16.100";
-        internal readonly Description _minecraftDescription = new Description();
-        public string? Identifier { get; set; }
-        public ItemCategory? Category { get; set; }
-
-        #endregion
-
-        #region Minecraft Item Properties
-
-        internal readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
-        private Dictionary<string, object> Components { get; set; } = new Dictionary<string, object>();
-        private RenderItem? Render { get; set; }
-        private object? _displayName;
-        public bool StackedByData { get; set; } = true;
-        public bool Foil { get; set; } = false;
-        public bool HandEquipped { get; set; } = true;
-        public bool DestroyBlocksInCreative { get; set; } = false;
-        public bool EquipWithSecondHand { get; set; } = false;
-        public int MaxStackSize { get; set; } = 64;
-        public int Duration { get; set; } = 0;
-        public int Damage { get; set; } = 0;
-        
-
-        #endregion
-
-        #region Builder
-
         /// <summary>
         /// Builds the JSON representation of the item.
         /// </summary>
@@ -59,10 +28,10 @@ namespace Addons
             Components["minecraft:foil"] = Foil;
             Components["minecraft:hand_equipped"] = HandEquipped;
 
-            _minecraftItem["description"] = _minecraftDescription;
+            _minecraftItem["description"] = _minecraftDescription ?? throw new ArgumentNullException(nameof(_minecraftDescription));
             _minecraftItem["components"] = Components;
 
-            _json.Propety(x =>
+            _json.Property(x =>
             {
                 x.data["format_version"] = FormatVersion;
                 x.data["minecraft:item"] = _minecraftItem;
@@ -76,13 +45,7 @@ namespace Addons
         /// </summary>
         /// <param name="key">The component key.</param>
         /// <param name="value">The component value.</param>
-        private void SetOptionalComponent(string key, object? value)
-        {
-            if (value != null)
-            {
-                Components[key] = value;
-            }
-        }
+        private void SetOptionalComponent(string key, object? value) { if (value != null) Components[key] = value; }
 
         /// <summary>
         /// Sets an optional component in the components dictionary if the value is greater than the default value.
@@ -90,23 +53,9 @@ namespace Addons
         /// <param name="key">The component key.</param>
         /// <param name="value">The component value.</param>
         /// <param name="defaultValue">The default value to compare against.</param>
-        private void SetOptionalComponent(string key, int value, int defaultValue)
-        {
-            if (value > defaultValue)
-            {
-                Components[key] = value;
-            }
-        }
+        private void SetOptionalComponent(string key, int value, int defaultValue) { if (value > defaultValue) Components[key] = value; }
+        private void SetOptionalComponent(string key, bool value) { if (value) Components[key] = value; }
 
-        private void SetOptionalComponent(string key, bool value)
-        {
-            if (value)
-            {
-                Components[key] = value;
-            }
-        }
-
-        #endregion
 
         #region Definition Methods
 
@@ -139,10 +88,7 @@ namespace Addons
         /// <param name="rotation">The rotation values (optional).</param>
         /// <param name="translation">The translation values (optional).</param>
         public void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
-        {
-            if (Render == null) Render = new RenderItem();
-            Render.AddRenderOffset(hand, view, scale, rotation, translation);
-        }
+                => Render = new RenderItem(hand, view, scale, rotation, translation);
 
         public void IsFood(Action<Food> action)
         {
@@ -160,7 +106,27 @@ namespace Addons
             SetOptionalComponent("minecraft:use_animation", "eat");
             SetOptionalComponent("minecraft:food", food.GetData());
         }
+        #endregion
 
+        private readonly BaseJson _json = new BaseJson();
+
+        #region Minecraft Item Properties
+        internal const string FormatVersion = "1.16.100";
+        internal Description? _minecraftDescription;
+        public string? Identifier { get; set; }
+        public ItemCategory? Category { get; set; }
+        internal readonly Dictionary<string, object> _minecraftItem = new Dictionary<string, object>();
+        private Dictionary<string, object> Components { get; set; } = new Dictionary<string, object>();
+        private RenderItem? Render { get; set; }
+        private object? _displayName;
+        public bool StackedByData { get; set; } = true;
+        public bool Foil { get; set; } = false;
+        public bool HandEquipped { get; set; } = true;
+        public bool DestroyBlocksInCreative { get; set; } = false;
+        public bool EquipWithSecondHand { get; set; } = false;
+        public int MaxStackSize { get; set; } = 64;
+        public int Duration { get; set; } = 0;
+        public int Damage { get; set; } = 0;
         #endregion
     }
 }

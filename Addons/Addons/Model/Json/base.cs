@@ -11,7 +11,7 @@ namespace Addons.Model
     {
         public Dictionary<string, object> data { get; private set; } = new Dictionary<string, object>();
 
-        public void Propety(Action<BaseJson> action)
+        public void Property(Action<BaseJson> action)
         {
             action(this);
         }

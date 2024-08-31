@@ -2,7 +2,7 @@
 {
     public interface IAddonBuilder
     {
-        Addon Base();
+        Addon Build();
 
         IAddonBuilder SetName(string name);
 

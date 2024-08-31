@@ -13,6 +13,10 @@ namespace Addons
     {
         internal Dictionary<string, object> Renders { get; set; } = new Dictionary<string, object>();
 
+        internal RenderItem(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null) 
+            => AddRenderOffset(hand, view, scale, rotation, translation);
+
+            
         /// <summary>
         /// Adds a render offset for the specified hand and view type.
         /// </summary>
@@ -21,7 +25,7 @@ namespace Addons
         /// <param name="scale">The scale values (optional).</param>
         /// <param name="rotation">The rotation values (optional).</param>
         /// <param name="translation">The translation values (optional).</param>
-        internal void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
+        private void AddRenderOffset(HandTypes hand, ViewTypes view, float[]? scale = null, float[]? rotation = null, float[]? translation = null)
         {
 
             scale ??= new float[] { 0.001f, 0.001f, 0.001f };

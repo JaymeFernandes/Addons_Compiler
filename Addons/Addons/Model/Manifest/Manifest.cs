@@ -44,7 +44,7 @@ namespace Addons.Model
             if (this.Header == null) throw new ArgumentNullException("header is null");
             if (this.Modules == null) throw new ArgumentNullException("modeles is null");
 
-            _json.Propety(x =>
+            _json.Property(x =>
             {
                 x.data.Add("format_version", Formet_Version);
                 x.data.Add("header", Header);

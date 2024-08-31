@@ -109,9 +109,7 @@ namespace Project
         {
             var builder = new Addon.Builder()
                 .SetName("MyAddon")
-                .SetDescription("Custom addon")
-                .AddBehavior()
-                .AddResource();
+                .SetDescription("Custom addon");
 
             var app = builder.Base();
 
