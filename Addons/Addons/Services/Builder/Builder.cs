@@ -177,7 +177,7 @@ namespace Addons
                 if (String.IsNullOrEmpty(addon.Name)) throw new ArgumentNullException(nameof(addon.Name));
 
                 var manifestB = new AddonManifest(addon.Name, addon.Description);
-                manifestB.AddModules(new AddonModules(AddonType.Data, addon.Description));
+                manifestB.Modules.Add(new AddonModules(AddonType.Data, addon.Description));
 
                 addon.Behavior = new BehaviorPackController(manifestB);
                 return this;
@@ -196,7 +196,7 @@ namespace Addons
                 if (String.IsNullOrEmpty(addon.Name)) throw new ArgumentNullException(nameof(addon.Name));
 
                 var manifestR = new AddonManifest(addon.Name, addon.Description);
-                manifestR.AddModules(new AddonModules(AddonType.Resources, addon.Description));
+                manifestR.Modules.Add(new AddonModules(AddonType.Resources, addon.Description));
 
                 addon.Resource = new ResourcePack(manifestR);
 

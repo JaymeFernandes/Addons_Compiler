@@ -1,5 +1,6 @@
 ﻿using Addons.Model;
 using Addons.Texture;
+using Addons.Services.FileManager;
 using Addons;
 using Newtonsoft.Json;
 
@@ -7,11 +8,11 @@ namespace Addons
 {
     internal static class ResourcePackManager
     {
-        private static string _Folder = "";
+        private static string _Folder = AppContext.BaseDirectory;
 
         public static void SerName(string name)
         {
-            _Folder = $"./com.mojang/development_resource_packs/{name}_Resource/";
+            _Folder += $"/com.mojang/development_resource_packs/{name}_Resource/";
         }
 
 

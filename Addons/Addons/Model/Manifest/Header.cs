@@ -20,5 +20,7 @@ namespace Addons.Model
         [JsonProperty("min_engine_version")]
         public List<int> MinVersion { get; set; } = new List<int> { 1, 8, 0 };
 
+        public void Property(Action<AddonHeader> action) => action(this);
+
     }
 }

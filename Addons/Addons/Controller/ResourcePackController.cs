@@ -34,14 +34,6 @@ namespace Addons
         /// </summary>
         public class Textures
         {
-            private TexturePack Item { get; set; }
-            private TexturePack Terrain { get; set; }
-            private TexturePack Entity { get; set; }
-            private TexturePack Environment { get; set; }
-            private TexturePack Gui { get; set; }
-            private TexturePack Misc { get; set; }
-            private TexturePack Particles { get; set; }
-
             /// <summary>
             /// Initializes a new instance of the <see cref="Textures"/> class.
             /// </summary>
@@ -185,6 +177,14 @@ namespace Addons
                     return texture;
                 }
             }
-        }
+
+            private TexturePack Item { get; set; }
+            private TexturePack Terrain { get; set; }
+            private TexturePack Entity { get; set; }
+            private TexturePack Environment { get; set; }
+            private TexturePack Gui { get; set; }
+            private TexturePack Misc { get; set; }
+            private TexturePack Particles { get; set; }
+        }     
     }
 }

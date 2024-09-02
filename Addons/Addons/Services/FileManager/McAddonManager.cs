@@ -9,6 +9,7 @@ namespace Addons
 {
     internal static class McAddonManager
     {
+        internal static string _Folder = AppContext.BaseDirectory;
         private static string _FolderB = "";
         private static string _FolderR = "";
         private static string _FolderMcAddon = "";
@@ -16,9 +17,9 @@ namespace Addons
 
         public static void SetName(string name)
         {
-            _FolderB = $"./com.mojang/development_behavior_packs/{name}_Behavior";
-            _FolderR = $"./com.mojang/development_resource_packs/{name}_Resource";
-            _FolderMcAddon = $"./com.mojang/{name}.mcaddon";
+            _FolderB = $"{_Folder}/com.mojang/development_behavior_packs/{name}_Behavior";
+            _FolderR = $"{_Folder}/com.mojang/development_resource_packs/{name}_Resource";
+            _FolderMcAddon = $"{_Folder}/com.mojang/{name}.mcaddon";
             _Name = name;
         }
 

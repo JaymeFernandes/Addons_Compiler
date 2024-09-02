@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace Addons.Model
 {
-    public class BaseJson
+    public abstract class BaseJson
     {
-        public Dictionary<string, object> data { get; private set; } = new Dictionary<string, object>();
-
-        public void Property(Action<BaseJson> action)
-        {
-            action(this);
-        }
+        protected Dictionary<string, object> data { get; private set; } = new Dictionary<string, object>();
 
         public override string ToString()
         {

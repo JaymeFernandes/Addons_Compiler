@@ -26,25 +26,14 @@ namespace Addons.Model
 
     internal static class AddonTypeExtensions
     {
-        internal static string GetString(this AddonType type)
-        {
-            switch (type)
-            {
-                case AddonType.Data:
-                    return "data";
-                case AddonType.Resources:
-                    return "resources";
-                case AddonType.Scripting:
-                    return "scripting";
-                case AddonType.Interface:
-                    return "interface";
-                case AddonType.SkinPack:
-                    return "skin_pack";
-                case AddonType.WorldTemplate:
-                    return "world_template";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-        }
+        internal static string GetString(this AddonType type) => type switch {
+            AddonType.Data => "data",
+            AddonType.Resources => "resources",
+            AddonType.Scripting => "scripting",
+            AddonType.Interface => "interface",
+            AddonType.SkinPack => "skin_pack",
+            AddonType.WorldTemplate => "world_template",
+            _ => ""
+        };
     }
 }

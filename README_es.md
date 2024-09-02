@@ -73,11 +73,11 @@ namespace Project
 
         static void Main()
         {
-            var builder = new Addon.Builder()
-                .SetName("MyAddon")
-                .SetDescription("Custom addon");
+            var builder = Addon.CreateBuilder()
+                  .SetName("MyAddon")
+                  .SetDescription("MyAddon");
 
-            var app = builder.Base();
+            var app = builder.Build();
 
             app.Behavior.RegisterItem(item);
 

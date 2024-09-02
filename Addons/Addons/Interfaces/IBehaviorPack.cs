@@ -6,8 +6,9 @@ namespace Addons
     {
         public AddonManifest? Manifest { get; set; }
 
-        public void RegisterItem(Item item);
+        public void MapItem(Item item);
+        public void MapItem(Action<IMinecraftItem> item);
+        public void MapItems(ICollection<Item> items);
 
-        public void RegisterItem(List<Item> items);
     }
 }

@@ -1,58 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Addons.Model;
 
 namespace Addons
 {
-    public sealed class Food
+    public sealed class Food : BaseJson
     {
-        private Dictionary<string, object> DataFood = new Dictionary<string, object>();
+        internal Dictionary<string, object> GetData()
+        {
+            data["can_always_eat"] = CanAlwaysEat;
+
+            data["saturation_modifier"] = GetValue(FoodSaturationModifier);
+
+            data["nutrition"] = Nutrition;
+            
+            if (UsingConvertsTo != null) data["using_converts_to"] = UsingConvertsTo;
+
+            return data;
+        }
+
+
+
+        private string GetValue(SaturationModifier saturationModifier) => FoodSaturationModifier switch
+        {
+            SaturationModifier.Low => "low",
+            SaturationModifier.Normal => "normal",
+            SaturationModifier.High => "high",
+            _ => string.Empty
+        };
+
         public bool CanAlwaysEat { get; set; } = false;
         public int Nutrition { get; set; } = 2;
         public SaturationModifier FoodSaturationModifier { get; set; } = SaturationModifier.Normal;
         public string? UsingConvertsTo { get; set; }
         public int UseDuration { get; set; } = 1;
-
-
-        public Dictionary<string, object> GetData()
-        {
-            DataFood["can_always_eat"] = CanAlwaysEat;
-
-            DataFood["saturation_modifier"] = GetValue(FoodSaturationModifier);
-
-            DataFood["nutrition"] = Nutrition;
-            
-            if (UsingConvertsTo != null) DataFood["using_converts_to"] = UsingConvertsTo;
-
-            return DataFood;
-        }
-
-
-
-        private string GetValue(SaturationModifier saturationModifier)
-        {
-            var value = "";
-
-            switch (FoodSaturationModifier)
-            {
-                case SaturationModifier.Low:
-                    value = "low";
-                    break;
-                case SaturationModifier.Normal:
-                    value = "normal";
-                    break;
-                case SaturationModifier.High:
-                    value = "high";
-                    break;
-                default:
-                    throw new NotImplementedException(nameof(FoodSaturationModifier));
-            }
-
-            return value;
-        }
-
     }
 }

@@ -1,14 +1,15 @@
 ﻿using Addons.Model;
+using Addons.Services.FileManager;
 
 namespace Addons
 {
     internal static class BehaviorPackManager
     {
-        private static string _Folder = "";
+        private static string _Folder = AppContext.BaseDirectory;
 
         public static void SerName(string name)
         {
-            _Folder = $"./com.mojang/development_behavior_packs/{name}_Behavior/";
+            _Folder += $"/com.mojang/development_behavior_packs/{name}_Behavior/";
         }
 
         public static List<string> Base = new List<string>()

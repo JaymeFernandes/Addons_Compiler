@@ -6,7 +6,7 @@ namespace Addons
     /// <summary>
     /// Represents a Minecraft item with various properties and methods for manipulation.
     /// </summary>
-    internal partial class ItemModel : IMinecraftItem
+    internal partial class ItemModel : BaseJson, IMinecraftItem
     {
         /// <summary>
         /// Builds the JSON representation of the item.
@@ -31,13 +31,10 @@ namespace Addons
             _minecraftItem["description"] = _minecraftDescription ?? throw new ArgumentNullException(nameof(_minecraftDescription));
             _minecraftItem["components"] = Components;
 
-            _json.Property(x =>
-            {
-                x.data["format_version"] = FormatVersion;
-                x.data["minecraft:item"] = _minecraftItem;
-            });
+            data["format_version"] = FormatVersion;
+            data["minecraft:item"] = _minecraftItem;
 
-            return _json.ToString();
+            return base.ToString();
         }
 
         /// <summary>
@@ -55,9 +52,6 @@ namespace Addons
         /// <param name="defaultValue">The default value to compare against.</param>
         private void SetOptionalComponent(string key, int value, int defaultValue) { if (value > defaultValue) Components[key] = value; }
         private void SetOptionalComponent(string key, bool value) { if (value) Components[key] = value; }
-
-
-        #region Definition Methods
 
         /// <summary>
         /// Sets the display name of the item.
@@ -94,6 +88,7 @@ namespace Addons
         {
             var food = new Food();
             action(food);
+            
             SetOptionalComponent("minecraft:use_duration", food.UseDuration);
             SetOptionalComponent("minecraft:use_animation", "eat");
             SetOptionalComponent("minecraft:food", food.GetData());
@@ -106,11 +101,8 @@ namespace Addons
             SetOptionalComponent("minecraft:use_animation", "eat");
             SetOptionalComponent("minecraft:food", food.GetData());
         }
-        #endregion
 
-        private readonly BaseJson _json = new BaseJson();
-
-        #region Minecraft Item Properties
+        
         internal const string FormatVersion = "1.16.100";
         internal Description? _minecraftDescription;
         public string? Identifier { get; set; }
@@ -127,6 +119,5 @@ namespace Addons
         public int MaxStackSize { get; set; } = 64;
         public int Duration { get; set; } = 0;
         public int Damage { get; set; } = 0;
-        #endregion
     }
 }
