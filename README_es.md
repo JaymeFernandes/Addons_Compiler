@@ -56,7 +56,7 @@ Para usar el **Compilador de Addons**, sigue los pasos a continuación para crea
 
 ## Ejemplo de Código 💻
 
-Aquí tienes un ejemplo de cómo crear un addon que agrega una espada personalizada al juego:
+Aquí tienes un ejemplo de cómo crear la base del addon:
 
 ```csharp
 using Addons;
@@ -66,10 +66,6 @@ namespace Project
 {
     public class Program
     {
-        // Crea la textura
-        // [Texture(Directorio, Tipo de Texture)]
-        [Texture("./SwordTexture.png", TextureType.Items)]
-        public Texture Sword { get; set; } = new Texture("iron_sword"); // Nombre de la textura
 
         static void Main()
         {
@@ -78,8 +74,6 @@ namespace Project
                   .SetDescription("MyAddon");
 
             var app = builder.Build();
-
-            app.Behavior.RegisterItem(item);
 
             app.CreateMcAddonFile();
         }

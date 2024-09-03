@@ -26,12 +26,12 @@ namespace Project
     public class Program
     {
         // Define texture for the Cheeseburger
-        [Texture("./cheese_burger.png", TextureType.Items)]
-        public Texture Burger { get; set; } = new Texture("my_burger");
+        [Texture("./cheese_burger.png")]
+        public Texture Burger { get; set; } = new Texture("my_burger", TextureType.Items);
 
         // Define texture for the Sword
-        [Texture("./SwordTexture.png", TextureType.Items)]
-        public Texture Sword { get; set; } = new Texture("my_sword");
+        [Texture("./SwordTexture.png")]
+        public Texture Sword { get; set; } = new Texture("my_sword", TextureType.Items);
     }
 }
 ```
@@ -55,7 +55,7 @@ myBurger.Property(x =>
     {
         x.Nutrition = 9;
         x.FoodSaturationModifier = SaturationModifier.Low;
-        x.UsingConvertsTo = "minecraft:paper";
+        x.UsingConvertsTo = Minecraft.Item.Paper;
     });
 });
 ```
@@ -81,8 +81,8 @@ mySword.Property(x =>
 Register the items so that they are recognized by the game.
 
 ```csharp
-app.Behavior.RegisterItem(myBurger);
-app.Behavior.RegisterItem(mySword);
+app.Behavior.AddItem(myBurger);
+app.Behavior.AddItem(mySword);
 ```
 
 ## 📝 Complete Code
@@ -126,7 +126,7 @@ namespace Project
                 {
                     x.Nutrition = 9;
                     x.FoodSaturationModifier = SaturationModifier.Low;
-                    x.UsingConvertsTo = "minecraft:paper";
+                    x.UsingConvertsTo = Minecraft.Item.Paper;
                 });
             });
 
@@ -141,8 +141,8 @@ namespace Project
                 x.Damage = 5;
             });
 
-            app.Behavior.RegisterItem(myBurger);
-            app.Behavior.RegisterItem(mySword);
+            app.Behavior.AddItem(myBurger);
+            app.Behavior.AddItem(mySword);
 
             app.CreateMcAddonFile();
         }

@@ -1,35 +1,28 @@
 ﻿namespace Addons.Texture
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class TextureAttribute : Attribute
-    {
-        public string Path { get; private set; }
-        public TextureType Type { get; private set; }
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+	public class TextureAttribute : Attribute
+	{
+		public string Image {get; set;} = string.Empty;
+		
+		public TextureAttribute(string image) => Image = image;
+	}
 
-        public TextureAttribute(string path, TextureType type)
-        {
-            Path = path;
-            Type = type;
-        }
-    }
+	public class Texture
+	{
+		public string Name { get; set; } = string.Empty;
+		public string FolderName { get; set; } = string.Empty;
+		public TextureType Type { get; set; } = TextureType.Items;
 
-    public class Texture
-    {
-        public string Name { get; set; }
-        public string Folder { get; set; } = "";
-
-        public Texture(string name)
-        {
-            Name = name;
-        }
-
-        public Texture(string name, string folder)
-        {
-            Name = name;
-            Folder = folder;
-        }
-    }
+		public Texture(string name, TextureType type)
+		{
+			Name = name;
+			Type = type;
+		}
+		
+		public Texture(string name, TextureType type, string folderName) : this(name, type) => this.FolderName = folderName;
+	}
 
 
-    
+	
 }

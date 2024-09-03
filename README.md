@@ -55,7 +55,7 @@ To use **Addon Compiler**, follow the steps below to create a basic addon that a
 
 ## Code Example 💻
 
-Here is an example of how to create an addon that adds a custom sword to the game:
+Here is an example of how to create the addon base:
 
 ```csharp
 using Addons;
@@ -65,11 +65,6 @@ namespace Project
 {
     public class Program
     {
-        // Create the texture
-        // [Texture(Directory, Texture type)]
-        [Texture("./SwordTexture.png", TextureType.Items)]
-        public Texture Sword { get; set; } = new Texture("iron_sword"); // Texture name
-
         static void Main()
         {
             var builder = Addon.CreateBuilder()
